@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@font-face {
+    font-family: "cocogoose";
+    src:
+    url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
+    url("fontes/cocogoose/ultralight.ttf") format("ttf"),
+    url("fontes/cocogoose/Medium.ttf") format("ttf");
+}
+
+@font-face {
+    font-family: "mousse";
+    src:
+    url("fontes/mousse/Mousse-Regular.otf") format("otf");
+}
+
+@font-face {
+        font-family: 'Roboto'; 
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
+        unicode-range: U+0030-0039;
+    }
+
+        body {
+        font-family: 'roboto', 'cocogoose';
+        font-size: 22px;
+        background-color: #FFF9EA;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        }
+
+    .container-central {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .logo img {
+        display: block;
+        margin: 0 auto;
+        margin-top: 0;
+        width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .titulo p {
+        text-align: center;
+        font-size: 50px;
+        margin-top: 50px;
+        color: #F8694D;
+        font-family: 'mousse', Arial, sans-serif;
+    }
+
+    .login-form {
+        text-align: center;
+        margin-top: 9px;
+    }
+
+    .login-form form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .login-form label {
+        margin-bottom: 6px;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        width: 250px;
+        padding: 14px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        box-shadow: 0 3px 3px #9EC662;
+        font-family: cocogoose, Arial, sans-serif;
+    }
+
+    .botao {
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .botao button {
+        background-color: #9EC662;
+        color: #FFF9EA;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 19px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16);
+        margin-top: 30px;
+        font-family: cocogoose, Arial, sans-serif;
+    }
+
+    .cadastro {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .cadastro p {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 17px;
+    }
+
+    .cadastro a {
+        color: #9EC662;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container-central">
+        <div class="logo">
+            <img src="img/Group 70.png" alt="Logo FitTech">
+        </div>
+
+        <div class="titulo">
+            <p>Login</p>
+        </div>
+
+        <div class="login-form">
+            <form action="process_login.php" method="POST">
+                <div>
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" placeholder="username ou e-mail" required>
+                </div>
+                <div style="margin-top: 10px;">
+                    <label for="password">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="senha" required>
+                </div>
+                <div class="botao">
+                    <button type="submit">Entrar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="cadastro">
+            <p>
+                Não tem uma conta? <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

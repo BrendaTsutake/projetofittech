@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    @font-face {
+        font-family: "cocogoose";
+        src:
+        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
+        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
+        url("fontes/cocogoose/Medium.ttf") format("ttf");
+    }
+
+    @font-face {
+        font-family: "mousse";
+        src:
+        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    }
+
+    @font-face {
+        font-family: 'inter'; 
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap') format('woff2');
+        unicode-range: U+0030-0039;
+    }
+
+    body {
+        font-family: 'cocogoose', Arial, sans-serif;
+        font-size: 22px;
+        background-color: #FFF9EA;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 250px 1fr 300px;
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto; 
+        padding: 20px;
+    }
+
+    .sidebar-left {
+        position: sticky; 
+        top: 20px;
+        height: 95vh;
+    }
+
+    .sidebar-left .logo img {
+        width: 150px;
+        margin-bottom: 30px;
+    }
+
+    .sidebar-left ul {
+        list-style: none;
+        padding: 0;
+    }   
+
+    .sidebar-left ul li a {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        text-decoration: none;
+        color: #555;
+        font-size: 18px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .sidebar-left ul li a i {
+        margin-right: 15px;
+        width: 20px;
+    }
+
+    .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
+        background-color: #F8694D;
+        color: white;
+    }
+
+    .sidebar-right {
+        position: sticky;
+        top: 20px;
+    }
+
+    .user-tools {
+        background-color: #C8E6C9;
+        padding: 15px;
+        border-radius: 12px;
+        width: 400px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        padding: 8px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        background: none;
+        width: 100%;
+        margin-left: 8px;
+    }
+
+    .tool-icons {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .tool-icons a {
+        font-size: 22px;
+        color: #333;
+    }
+
+    .tool-icons a.active {
+        color: #86A754; 
+    }
+
+    .tool-icons a:hover {
+        color: #86A754;
+    }
+
+    .feed {
+        max-width: 680px; 
+    }
+
+    .feed h2 {
+        font-family: 'cocogoose', Arial, sans-serif;
+        margin-left: 245px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 28px;
+    }
+
+    .calendar-container {
+        background-color: #ffffff;
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 25px;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .calendar-header h3 {
+        font-family: 'inter', 'cocogoose', Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+    }
+
+    .month-arrow {
+        background-color: #F1F1F1;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        color: #555;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .month-arrow:hover {
+        background-color: #e7e7e7;
+    }
+
+    .month-arrow:disabled {
+        background-color: #f9f9f9;
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .calendar-grid {
+        width: 100%;
+        border-collapse: collapse; 
+    }
+
+    .calendar-grid th {
+        font-family: 'cocogoose', Arial, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #777;
+        padding: 10px;
+        border: 1px solid #F0F0F0;
+        text-align: center;
+        background-color: #FAFAFA;
+    }
+
+    .calendar-grid td {
+        font-family: 'Inter', Arial, sans-serif;
+        font-size: 18px;
+        font-weight: 500;
+        padding: 15px;
+        border: 1px solid #F0F0F0;
+        text-align: center;
+        height: 60px; 
+        color: #333;
+    }
+
+    .calendar-grid td.today {
+        background-color: #FFECB3; 
+        border-color: #FFE082;
+        font-weight: 900;
+        color: #4a3e1a;
+    }
+
+    .calendar-grid td.empty {
+        color: #bbb;
+        background-color: #fdfdfd;
+    }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav class="sidebar-left">
+            <div class="logo">
+                <img src="img/logo.png" alt="FitTech Logo">
+            </div>
+            <ul>
+                <li><a href="paginicial.html"><i class="fa-solid fa-house"></i> <span>Página Inicial</span></a></li>
+                <li><a href="chat.html"><i class="fa-solid fa-comments"></i> <span>Conversas</span></a></li>
+                <li><a href="refeicao.html"><i class="fa-solid fa-utensils"></i> <span>Refeições</span></a></li>
+                <li><a href="dicas.html"><i class="fa-solid fa-pencil"></i> <span>Dica do Nutri</span></a></li>
+                <li><a href="progresso.html"><i class="fa-solid fa-chart-line"></i> <span>Progresso</span></a></li>
+            </ul>
+        </nav>
+
+        <main class="feed">
+    <h2>Calendário</h2>
+
+    <div class="calendar-container">
+        
+        <div class="calendar-header">
+            <button id="prev-month" class="month-arrow">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h3 id="month-year"></h3>
+            <button id="next-month" class="month-arrow">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <table class="calendar-grid">
+            <thead>
+                <tr>
+                    <th>DOM</th>
+                    <th>SEG</th>
+                    <th>TER</th>
+                    <th>QUA</th>
+                    <th>QUI</th>
+                    <th>SEX</th>
+                    <th>SAB</th>
+                </tr>
+            </thead>
+            <tbody id="calendar-body">
+                </tbody>
+        </table>
+    </div>
+</main>
+
+        <aside class="sidebar-right">
+            <div class="user-tools">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar...">
+                </div>
+                <div class="tool-icons">
+                    <a href="notificacao.html" title="Notificações"><i class="fa-solid fa-bell"></i></a>
+                    <a href="calendario.html" title="Calendário" class="active"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a href="perfil.html" title="Perfil"><i class="fa-solid fa-user"></i></a>
+                </div>
+            </div>
+            </aside>
+    </div>
+
+</body>
+<script>
+    // Adiciona o script SÓ DEPOIS que o HTML carregar
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // --- Elementos do DOM ---
+        const monthYearEl = document.getElementById('month-year');
+        const calendarBody = document.getElementById('calendar-body');
+        const prevBtn = document.getElementById('prev-month');
+        const nextBtn = document.getElementById('next-month');
+
+        // --- Constantes e Variáveis ---
+        const meses = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+        
+        const ANO_CALENDARIO = 2025;
+        
+        // Pega a data de HOJE. Se não estivermos em 2025, ele usa Janeiro 2025 como padrão.
+        const hoje = new Date();
+        let diaAtual = -1;
+        let mesAtual = 0; // Janeiro (índice 0)
+
+        if (hoje.getFullYear() === ANO_CALENDARIO) {
+            mesAtual = hoje.getMonth(); // Mês atual (ex: 9 para Outubro)
+            diaAtual = hoje.getDate();   // Dia atual (ex: 20)
+        }
+
+        // --- Funções ---
+
+        /**
+         * Gera e exibe o calendário para um mês/ano específico.
+         */
+        function gerarCalendario(mes, ano) {
+            // Limpa o calendário anterior
+            calendarBody.innerHTML = '';
+            
+            // Atualiza o título (ex: "Setembro de 2025")
+            monthYearEl.textContent = `${meses[mes]} de ${ano}`;
+            
+            // Descobre o primeiro dia da semana (0=Domingo, 1=Segunda, ...)
+            let primeiroDia = new Date(ano, mes, 1).getDay();
+            
+            // Descobre o último dia do mês
+            let diasNoMes = new Date(ano, mes + 1, 0).getDate();
+            
+            let data = 1; // Contador dos dias
+            
+            // Cria as 6 linhas da semana
+            for (let i = 0; i < 6; i++) {
+                let linha = document.createElement('tr');
+                
+                // Cria os 7 dias da semana
+                for (let j = 0; j < 7; j++) {
+                    let celula = document.createElement('td');
+                    
+                    // Se a linha é a primeira (i=0) E o dia da semana (j) é menor que o 1º dia do mês
+                    if (i === 0 && j < primeiroDia) {
+                        celula.textContent = '-';
+                        celula.classList.add('empty');
+                    } 
+                    // Se o contador 'data' já passou do total de dias no mês
+                    else if (data > diasNoMes) {
+                        celula.textContent = '-';
+                        celula.classList.add('empty');
+                    } 
+                    // Se é um dia válido
+                    else {
+                        celula.textContent = data;
+                        
+                        // Marca o dia "hoje" (só se estivermos no ano 2025)
+                        if (data === diaAtual && mes === hoje.getMonth() && ano === ANO_CALENDARIO) {
+                            celula.classList.add('today');
+                        }
+                        
+                        data++; // Incrementa o contador do dia
+                    }
+                    linha.appendChild(celula);
+                }
+                calendarBody.appendChild(linha);
+                
+                // Para de criar linhas se já acabaram os dias
+                if (data > diasNoMes) {
+                    break;
+                }
+            }
+            
+            // Atualiza o estado dos botões
+            atualizarBotoes();
+        }
+
+        /**
+         * Desabilita os botões de avançar/voltar se estiver no limite (Jan/Dez 2025)
+         */
+        function atualizarBotoes() {
+            // Desabilita "anterior" se for Janeiro (mês 0)
+            prevBtn.disabled = (mesAtual === 0);
+            
+            // Desabilita "próximo" se for Dezembro (mês 11)
+            nextBtn.disabled = (mesAtual === 11);
+        }
+
+        // --- Event Listeners ---
+        
+        prevBtn.addEventListener('click', () => {
+            if (mesAtual > 0) {
+                mesAtual--;
+                gerarCalendario(mesAtual, ANO_CALENDARIO);
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            if (mesAtual < 11) {
+                mesAtual++;
+                gerarCalendario(mesAtual, ANO_CALENDARIO);
+            }
+        });
+
+        // --- Inicialização ---
+        // Gera o calendário para o mês atual assim que a página carrega
+        gerarCalendario(mesAtual, ANO_CALENDARIO);
+        
+    });
+</script>
+</html>

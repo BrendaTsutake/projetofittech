@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refeição</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    @font-face {
+        font-family: "cocogoose";
+        src:
+        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
+        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
+        url("fontes/cocogoose/Medium.ttf") format("ttf");
+    }
+
+    @font-face {
+        font-family: "mousse";
+        src:
+        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    }
+
+    @font-face {
+        font-family: 'Roboto'; 
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
+        unicode-range: U+0030-0039;
+    }
+
+    body {
+        font-family: 'roboto', 'cocogoose';
+        font-size: 22px;
+        background-color: #FFF9EA;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 250px 1fr 300px;
+        gap: 20px; /* Espaço entre as colunas */
+        max-width: 1400px; /* Largura máxima do site */
+        margin: 0 auto; /* Centraliza o site na tela */
+        padding: 20px;
+    }
+
+    .sidebar-left {
+        position: sticky; /* Deixa o menu fixo ao rolar a página */
+        top: 20px;
+        height: 95vh;
+    }
+
+    .sidebar-left .logo img {
+        width: 150px;
+        margin-bottom: 30px;
+    }
+
+    .sidebar-left ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar-left ul li a {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        text-decoration: none;
+        color: #555;
+        font-size: 18px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .sidebar-left ul li a i {
+        margin-right: 15px;
+        width: 20px; /* Alinha os ícones */
+    }
+
+    .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
+        background-color: #F8694D;
+        color: white;
+    }
+
+    .sidebar-right {
+        position: sticky;
+        top: 20px;
+    }
+
+    .user-tools {
+        background-color: #C8E6C9; /* Tom de verde do header original */
+        padding: 15px;
+        border-radius: 12px;
+        width: 400px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        padding: 8px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        background: none;
+        width: 100%;
+        margin-left: 8px;
+    }
+
+    .tool-icons {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .tool-icons a {
+        font-size: 22px;
+        color: #333;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%; /* Isso já deixa a imagem redonda */
+        margin-right: 10px;
+        object-fit: cover; 
+        background-color: #F8694D; 
+    }
+
+    .feed-content {
+        padding: 10px;
+    }
+
+    .feed-header {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+        color: #555;
+        font-size: 1.2em;
+    }
+
+    .week-navigator {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .day-circle {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 8px;
+        transition: all 0.2s;
+    }
+
+    .day span {
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #888;
+    }
+
+    .day.active .day-circle {
+        border-color: #F8694D;
+        background-color: #F8694D;
+        color: white;
+    }
+
+    .day.active span {
+        color: #F8694D;
+    }
+
+    .meal-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #E8F5E9; /* Verde mais claro e suave */
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .meal-item:hover {
+        transform: translateY(-3px);
+    }
+
+    .meal-info {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* Espaço entre o ícone e o texto */
+    }
+
+    .meal-info i {
+        font-size: 24px;
+        color: #555;
+    }
+        
+    .meal-info .meal-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .meal-item > i.fa-plus {
+        font-size: 20px;
+        color: #555;
+    }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <nav class="sidebar-left">
+            <div class="logo">
+                <img src="img/logo.png" alt="FitTech Logo">
+            </div>
+            <ul>
+                <li><a href="paginicial.html"><i class="fa-solid fa-house"></i> <span>Página Inicial</span></a></li>
+                <li><a href="chat.html"><i class="fa-solid fa-comments"></i> <span>Conversas</span></a></li>
+                <li><a href="refeicao.html" class="active"><i class="fa-solid fa-utensils"></i> <span>Refeições</span></a></li>
+                <li><a href="dicas.html"><i class="fa-solid fa-pencil"></i> <span>Dica do Nutri</span></a></li>
+                <li><a href="progresso.html"><i class="fa-solid fa-chart-line"></i> <span>Progresso</span></a></li>
+            </ul>
+        </nav>
+
+        <main class="feed-content">
+            <div class="feed-header">Hoje</div>
+    
+            <div class="week-navigator">
+                <div class="day">
+                    <div class="day-circle">D</div>
+                    <span>Dom</span>
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">S</div>
+                    <span>Seg</span>
+                </div>
+
+                <div class="day active"> <div class="day-circle"><i class="fa-solid fa-check"></i></div>
+                    <span>Ter</span>
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">Q</div>
+                    <span>Qua</span>
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">Q</div>
+                    <span>Qui</span>
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">S</div>
+                    <span>Sex</span>
+                </div>
+
+                <div class="day">
+                    <div class="day-circle">S</div>
+                    <span>Sáb</span>
+                </div>
+            </div>
+
+            <div class="meals-list">
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <i class="fa-solid fa-sun"></i>
+                        <span class="meal-name">Café da Manhã</span>
+                    </div>
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <i class="fa-solid fa-cloud-sun"></i>
+                        <span class="meal-name">Almoço</span>
+                    </div>
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <i class="fa-solid fa-moon"></i>
+                        <span class="meal-name">Jantar</span>
+                    </div>
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <i class="fa-solid fa-cookie-bite"></i>
+                        <span class="meal-name">Snacks/Outros</span>
+                    </div>
+
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+
+                <div class="meal-item">
+                    <div class="meal-info">
+                        <i class="fa-solid fa-blender"></i>
+                        <span class="meal-name">Refeições Personalizadas</span>
+                    </div>
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="user-tools">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar...">
+                </div>
+
+                <div class="tool-icons">
+                    <a href="notificacao.html" title="Notificações"><i class="fa-solid fa-bell"></i></a>
+                    <a href="calendario.html" title="Calendário"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a href="perfil.html" title="Perfil"><i class="fa-solid fa-user"></i></a>
+                </div>
+            </div>
+            </aside>
+    </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</html>

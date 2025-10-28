@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restrições</title>
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    @font-face {
+        font-family: "cocogoose";
+        src:
+        url("fontes/cocogoose/ExtraBold.ttf") format("ttf");
+    }
+
+    @font-face {
+        font-family: "mousse";
+        src:
+        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    }
+
+    @font-face {
+        font-family: 'Roboto'; 
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
+        unicode-range: U+0030-0039;
+        }
+
+    body {
+        font-family: 'cocogoose', Arial, sans-serif;
+        font-size: 22px;
+        background-color: #FFF9EA;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo img {
+        display: block;
+        margin: 0 auto;
+        margin-top: 0;
+        width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .restricoes p{
+        text-align: center;
+        font-size: 50px;
+        margin-top: 50px;
+        margin-bottom: 0;
+        font-family: 'cocogoose', Arial, sans-serif;
+        color: #9EC662;
+    }
+
+    .textinho p {
+        margin-top: 0;
+        text-align: center;
+        font-size: 22px;
+        margin-bottom: 60px;
+    }
+
+
+    input[type="checkbox"]{
+        margin-right: 10px;
+        transform: scale(1.8);
+        cursor: pointer;
+        margin-bottom: 17px;
+    }
+
+    .botao {
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .botao button {
+        background-color: #F8694D;
+        color: #FFF9EA;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 19px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16);
+        margin-top: 30px;
+        font-family: cocogoose, Arial, sans-serif;
+    }
+
+    input[type="text"]{
+        margin-left: 35px;
+        font-family: 'cocogoose', Arial, sans-serif;
+        transform: scale(1.4);
+        cursor: pointer;
+        font-size: 12px;
+        margin-bottom: 17px;
+        width: 175px;
+    }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="logo">
+        <img src="img/logo.png" alt="Logo">
+    </div>
+
+    <div class="restricoes">
+        <strong><p>Diga-nos suas restrições alimentares, se houver</p></strong>
+    </div>
+
+    <div class="textinho">
+        <p>Estamos montando seu plano personalizado. Priorizando tornar o mais acessível possível.</p>
+    </div>
+
+    <form class="restricoes-form">
+        <div class="checkbox-item">
+            <input type="checkbox" id="sem-restricoes" name="restricao" value="nenhuma">
+            <label for="sem-restricoes">Sem restrições</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="vegetariano" name="restricao" value="vegetariano">
+            <label for="vegetariano">vegetariano</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="vegano" name="restricao" value="vegano">
+            <label for="vegano">vegano</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="gluten" name="restricao" value="gluten">
+            <label for="gluten">intolerante a glúten</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="lactose" name="restricao" value="lactose">
+            <label for="lactose">intolerante a lactose</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="acucar" name="restricao" value="acucar">
+            <label for="acucar">Sem açúcar adicionado</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="low-carb" name="restricao" value="low-carb">
+            <label for="low-carb">Low Carb</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="alergia" name="restricao" value="alergia">
+            <label for="alergia">Alergia a alimentos</label>
+        </div>
+
+        <div class="alergia container">
+            <label for="alergia-detalhes">Se sim, qual?</label>
+            <input type="text" id="alergia-detalhes" name="alergia_detalhes" placeholder="Digite o nome do alimento">
+        </div>
+    </form>
+
+        <div class="botao">
+            <button class="btn btn-secondary">Voltar</button>
+            <button class="btn btn-primary">Avançar</button>
+        </div>
+</body>
+</html>

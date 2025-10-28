@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+    @font-face {
+        font-family: "cocogoose";
+        src:
+        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
+        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
+        url("fontes/cocogoose/Medium.ttf") format("ttf");
+    }
+
+    @font-face {
+        font-family: "mousse";
+        src:
+        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    }
+
+    @font-face {
+        font-family: 'Roboto'; 
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
+        unicode-range: U+0030-0039;
+    }
+
+    body {
+        font-family: 'roboto', 'cocogoose';
+        font-size: 22px;
+        background-color: #FFF9EA;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* O contêiner principal que cria as 3 colunas */
+    .container {
+        display: grid;
+        grid-template-columns: 250px 1fr 300px;
+        gap: 20px; /* Espaço entre as colunas */
+        max-width: 1400px; /* Largura máxima do site */
+        margin: 0 auto; /* Centraliza o site na tela */
+        padding: 20px;
+    }
+
+    /* Estilos da Coluna Esquerda (Navegação) */
+    .sidebar-left {
+        position: sticky; /* Deixa o menu fixo ao rolar a página */
+        top: 20px;
+        height: 95vh;
+    }
+
+    .sidebar-left .logo img {
+        width: 150px;
+        margin-bottom: 30px;
+    }
+
+    .sidebar-left ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar-left ul li a {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        text-decoration: none;
+        color: #555;
+        font-size: 18px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .sidebar-left ul li a i {
+        margin-right: 15px;
+        width: 20px; /* Alinha os ícones */
+    }
+
+    .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
+        background-color: #F8694D;
+        color: white;
+    }
+
+    /* Estilos da Coluna Direita (Ferramentas) */
+    .sidebar-right {
+        position: sticky;
+        top: 20px;
+    }
+
+    .user-tools {
+        background-color: #C8E6C9; /* Tom de verde do header original */
+        padding: 15px;
+        border-radius: 12px;
+        width: 400px;
+    }
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        padding: 8px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        background: none;
+        width: 100%;
+        margin-left: 8px;
+    }
+
+    .tool-icons {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .tool-icons a {
+        font-size: 22px;
+        color: #333;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%; /* Isso já deixa a imagem redonda */
+        margin-right: 10px;
+        object-fit: cover; 
+        background-color: #F8694D; 
+    }
+
+    .desktop-chat-container {
+        width: 900px;
+        height: 90vh;
+        max-width: 1400px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        display: flex;
+        overflow: hidden;
+    }
+
+    /* --- Coluna da Esquerda: Sidebar --- */
+    .sidebar {
+        width: 300px;
+        flex-shrink: 0;
+        background-color:#f5f7f6;
+        border-right: 1px solid #e1e1e1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 1px solid #e1e1e1;
+    }
+
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #90b889;
+    }
+
+    .user-name {
+        font-weight: 500;
+        font-size: 1.1em;
+    }
+
+    .search-bar {
+        padding: 15px;
+        border-bottom: 1px solid #e1e1e1;
+    }
+
+    .search-bar input {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 20px;
+        border: 1px solid #e1e1e1;
+        background-color: #fff;
+        font-size: 0.9em;
+    }
+
+    .contact-list {
+        list-style: none;
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+
+    .contact {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #e1e1e1;
+    }
+
+    .contact:hover {
+        background-color: #e9eceb;
+    }
+
+    .contact.active {
+        background-color: #e8f5e9;
+    }
+
+    .contact-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+        
+    .contact .contact-avatar { background-color: #79a571; }
+    .contact.user2 .contact-avatar { background-color: #a7c5eb; }
+    .contact.user3 .contact-avatar { background-color: #f7c5a8; }
+
+
+    .contact-info .name {
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+        
+    .contact-info .last-message {
+        font-size: 0.9em;
+        color: #777;
+    }
+        
+
+    /* --- Coluna da Direita: Área do Chat --- */
+    .chat-area {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #fdfaf0;
+    }
+
+    .chat-header {
+        padding: 20px;
+        border-bottom: 1px solid #e1e1e1;
+        background-color: #fff;
+    }
+
+    .chat-header h2 {
+        font-size: 1.2em;
+        font-weight: 500;
+    }
+
+    .chat-body {
+        flex-grow: 1;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    .message {
+        display: flex;
+        margin-bottom: 20px;
+        max-width: 60%;
+    }
+
+    .bubble {
+        padding: 12px 18px;
+        border-radius: 20px;
+        line-height: 1.5;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+        
+    .message.sent {
+        margin-left: auto; /* Alinha à direita */
+        flex-direction: row-reverse;
+    }
+
+    .message.received {
+        margin-right: auto; /* Alinha à esquerda */
+    }
+        
+    .message.sent .bubble {
+        background-color: #f7ddda;
+        border-bottom-right-radius: 5px;
+    }
+
+    .message.received .bubble {
+        background-color: #9dc696;
+        border-bottom-left-radius: 5px;
+    }
+        
+    /* Input do Chat */
+    .chat-input-area {
+        padding: 20px;
+        background-color: #f5f7f6;
+        border-top: 1px solid #e1e1e1;
+    }
+
+    .chat-input-area form {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #message-input {
+        flex-grow: 1;
+        padding: 12px 20px;
+        border: 1px solid #e1e1e1;
+        border-radius: 25px;
+        font-size: 1em;
+    }
+
+    .send-button {
+        background-color: #90b889;
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+        
+    .send-button:hover {
+        background-color: #79a571;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav class="sidebar-left">
+            <div class="logo">
+                <img src="img/logo.png" alt="FitTech Logo">
+            </div>
+            <ul>
+                <li><a href="paginicial.html"><i class="fa-solid fa-house"></i> <span>Página Inicial</span></a></li>
+                <li><a href="chat.html" class="active"><i class="fa-solid fa-comments"></i> <span>Conversas</span></a></li>
+                <li><a href="refeicao.html"><i class="fa-solid fa-utensils"></i> <span>Refeições</span></a></li>
+                <li><a href="dicas.html"><i class="fa-solid fa-pencil"></i> <span>Dica do Nutri</span></a></li>
+                <li><a href="progresso.html"><i class="fa-solid fa-chart-line"></i> <span>Progresso</span></a></li>
+            </ul>
+        </nav>
+
+        <div class="desktop-chat-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <span class="user-name">Seu Nome</span>
+                </div>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Procurar ou começar uma nova conversa">
+            </div>
+            <ul class="contact-list">
+                <li class="contact active">
+                    <div class="contact-avatar"></div>
+                    <div class="contact-info">
+                        <div class="name">Pessoa</div>
+                        <div class="last-message">Ok, combinado!</div>
+                    </div>
+                </li>
+                <li class="contact user2">
+                    <div class="contact-avatar"></div>
+                    <div class="contact-info">
+                        <div class="name">Pessoa </div>
+                        <div class="last-message">Te vejo amanhã.</div>
+                    </div>
+                </li>
+                <li class="contact user3">
+                    <div class="contact-avatar"></div>
+                    <div class="contact-info">
+                        <div class="name">Pessoa </div>
+                        <div class="last-message">Obrigada!</div>
+                    </div>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="chat-area">
+            <header class="chat-header">
+                <h2>Pessoa </h2>
+            </header>
+            <div class="chat-body" id="chat-body">
+                <div class="message received">
+                    <div class="bubble">Olá! Este é o layout para desktop.</div>
+                </div>
+                <div class="message received">
+                    <div class="bubble">A lista de contatos fica à esquerda e a conversa aqui.</div>
+                </div>
+                <div class="message sent">
+                    <div class="bubble">Excelente! Fica muito mais organizado em telas maiores.</div>
+                </div>
+            </div>
+            <footer class="chat-input-area">
+                <form id="message-form">
+                    <input type="text" id="message-input" placeholder="Digite sua mensagem aqui..." autocomplete="off">
+                    <button type="submit" class="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </footer>
+        </main>
+    </div>
+
+
+        <aside class="sidebar-right">
+            <div class="user-tools">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar...">
+                </div>
+                <div class="tool-icons">
+                    <a href="notificacao.html" title="Notificações"><i class="fa-solid fa-bell"></i></a>
+                    <a href="calendario.html" title="Calendário"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a href="perfil.html" title="Perfil"><i class="fa-solid fa-user"></i></a>
+                </div>
+            </div>
+            </aside>
+    </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</html>
