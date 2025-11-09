@@ -1,3 +1,13 @@
+<?php
+session_start();
+// Verifica se o usuário está logado
+if (!isset($_SESSION['login_nome'])) {
+    header("Location: login.html");
+    exit();
+}
+//Armazena o nome do usuario
+$nome_usuario = htmlspecialchars($_SESSION['login_nome']);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

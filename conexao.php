@@ -1,32 +1,26 @@
 <?php
-// Define constantes para os detalhes da conexão com o banco de dados
-// DB_SERVER: endereço dp servidor onde o MySQL está rodando
-define('DB_SERVER', 'localhost');
+/* Arquivo: conexao.php 
+ Conexão usando a biblioteca MySQLi
+*/
 
-// DB_USERNAME: Nome do usuário para acessar o banco de dados MySQL
-define('DB_USERNAME', 'root');
+// --- Configure seus dados de acesso abaixo ---
+$servername = "localhost";    // Geralmente é "localhost" ou "127.0.0.1"
+$username   = "root";         // Seu usuário do XAMPP (padrão é "root")
+$password   = "";             // Sua senha do XAMPP (padrão é "")
+$dbname     = "mydb";         // O nome do seu banco de dados (pelas suas imagens)
+// ----------------------------------------------
 
-//DB_PASSWORD: Senha do usuário do banco de dados 
-define('DB_PASSWORD', '');
 
-//DB_NAME: Recebe o nome do banco de dados que criamos 
-define('DB_NAME', 'diagrama tcc');
+// Tenta criar a conexão
+$conexao = mysqli_connect($servername, $username, $password, $dbname);
 
-// Tenta estabelecer a conexão com o servidor usando a função mysqli_connect()
-// Passa o servidor, usuario, senha e o nome do banco de dados 
-$conexao = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD,DB_NAME);
-
-//Verifica se a conexão falhou
-// A funçao mysqli_connect() retorna 'false' em caso de erro
-
-if($conexao === false){
-    //se a conexão falhar, termina a execuçao do script (die) e exibe uma mensagem de erro
-    // mysqli_connect_error() retorna a descrição do último erro de conexão
-    die ("ERRO: Não foi possível conectar ao banco de dados. " . mysqli_connect_error());
+// Verifica se a conexão falhou
+if (!$conexao) {
+    // Interrompe o script e exibe o erro
+    die("Falha na conexão com o banco de dados: " . mysqli_connect_error());
 }
 
-// define o conjuntode caracteres da conexão para UTF-8
-// isso é crucial para garantir que acentos e caracteres especiais(ç, á, é, etc)
-// sejam armazenados e recuperados corretamente do banco de dados
-
+// Define o charset para UTF-8 (para suportar acentos e caracteres especiais)
 mysqli_set_charset($conexao, "utf8");
+
+?>
