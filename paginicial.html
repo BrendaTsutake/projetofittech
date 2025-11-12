@@ -1,13 +1,3 @@
-<?php
-session_start();
-// Verifica se o usuário está logado
-if (!isset($_SESSION['login_nome'])) {
-    header("Location: login.html");
-    exit();
-}
-//Armazena o nome do usuario
-$nome_usuario = htmlspecialchars($_SESSION['login_nome']);
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -19,34 +9,22 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
     @font-face {
-        font-family: "cocogoose";
-        src:
-        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
-        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
-        url("fontes/cocogoose/Medium.ttf") format("ttf");
+        font-family: "Louis George Cafe";
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
     }
 
     @font-face {
-        font-family: "mousse";
-        src:
-        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    font-family: "mousse";
+    src:
+    url("fontes/mousse/Mousse-Regular.otf") format("otf");
     }
 
-    @font-face {
-        font-family: 'Roboto'; 
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
-        unicode-range: U+0030-0039;
-    }
-
+        
     body {
-        font-family: 'roboto', 'cocogoose';
-        font-size: 22px;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        font-weight: 500; 
+        font-size: 20px;
         background-color: #FFF9EA;
         margin: 0;
         min-height: 100vh;
@@ -58,18 +36,15 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
 
     .container {
         display: grid;
-        /* Define 3 colunas: a 1ª e 3ª com largura fixa, a 2ª (feed) ocupa o espaço restante */
         grid-template-columns: 250px 1fr 300px;
-        gap: 20px; /* Espaço entre as colunas */
-        max-width: 1400px; /* Largura máxima do site */
-        margin: 0 auto; /* Centraliza o site na tela */
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto; 
         padding: 20px;
     }
 
-    /* Estilos da Coluna Esquerda (Navegação) */
     .sidebar-left {
-        position: sticky; /* Deixa o menu fixo ao rolar a página */
-        top: 20px;
+        position: sticky; 
         height: 95vh;
     }
 
@@ -97,7 +72,7 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
 
     .sidebar-left ul li a i {
         margin-right: 15px;
-        width: 20px; /* Alinha os ícones */
+        width: 20px; 
     }
 
     .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
@@ -105,9 +80,8 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
         color: white;
     }
 
-    /* Estilos da Coluna Central (Feed) */
     .feed {
-        max-width: 680px; /* Largura máxima para o feed para boa legibilidade */
+        max-width: 680px; 
     }
 
     .carousel img {
@@ -116,13 +90,12 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
         margin-bottom: 20px;
     }
 
-    /* Estilo dos cards de postagem */
     .post-card {
         background-color: white;
         border-radius: 12px;
         margin-bottom: 20px;
         border: 1px solid #eee;
-        overflow: hidden; /* Garante que a imagem não saia do card */
+        overflow: hidden; 
     }
     
     .post-header {
@@ -139,13 +112,14 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
 }
 .username {
     font-weight: bold;
+    font-size: 25px;
 }
 .post-image {
     width: 100%;
 }
 .post-caption {
     padding: 15px;
-    font-size: 15px;
+    font-size: 19px;
     line-height: 1.5;
 }
 
@@ -186,7 +160,7 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
 .user-avatar {
     width: 40px;
     height: 40px;
-    border-radius: 50%; /* deixa a imagem redonda */
+    border-radius: 50%; 
     margin-right: 10px;
     object-fit: cover; 
     background-color: #F8694D; 
@@ -215,26 +189,26 @@ $nome_usuario = htmlspecialchars($_SESSION['login_nome']);
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner">
+    </div>
+    <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src="img/darklab.png" class="d-block w-100" alt="...">
+        <img src="img/darklab.png" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="img/growth.png" class="d-block w-100" alt="...">
+        <img src="img/growth.png" class="d-block w-100" alt="...">
     </div>
     <div class="carousel-item">
-      <img src="img/max.png" class="d-block w-100" alt="...">
+        <img src="img/max.png" class="d-block w-100" alt="...">
     </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
-  </button>
+    </button>
 </div>
 
             <article class="post-card">

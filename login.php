@@ -1,66 +1,88 @@
 <?php
-// Inicia a sessão para armazenar o nome do usuário após o login
+// 1. Iniciar a sessão
+// Isso é OBRIGATÓRIO no topo de qualquer página que usa sessões.
 session_start();
 
-// 1. Configuração do Banco de Dados (Baseado nos outros arquivos)
-include_once 'conexao.php';
-$table_login = "login"; // Nome da tabela de login
+// 2. Configurações do Banco de Dados
+$servername = "localhost"; // Servidor
+$username_db = "root";     // Usuário do banco
+$password_db = "";         // Senha do banco
+$dbname = "mydb";          // Nome do banco
 
-// 2. Coleta dos Dados do Formulário via POST (de index.html)
-$login_input = $_POST['login'] ?? '';
-$senha_input = $_POST['senha'] ?? '';
+// 3. Criar a Conexão
+$conn = new mysqli($servername, $username_db, $password_db, $dbname);
 
-// 3. Conexão com o Banco de Dados
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    // Exibe erro de conexão e interrompe o script
-    die("Erro de Conexão com o Banco de Dados: " . $e->getMessage());
+// Verificar a conexão
+if ($conn->connect_error) {
+    die("Falha na conexão: " . $conn->connect_error);
 }
 
-// 4. Preparação da Query SQL para verificar login e senha
-// A busca é feita por email OU CPF, e a senha deve corresponder
-$sql = "SELECT login_nome FROM $table_login WHERE login_email = :login_input AND login_senha = :senha_input";
+// 4. Verificar se o formulário foi enviado (método POST)
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-try {
+    // 5. Obter dados do formulário
+    $login_identifier = $_POST['username']; // O campo pode ser 'username' ou 'email'
+    $senha_digitada = $_POST['senha'];
+
+    // 6. Preparar a consulta SQL (Prevenção contra SQL Injection)
+    // Vamos procurar o usuário pelo 'username' OU pelo 'email'
+    $sql = "SELECT id, nome, username, senha FROM usuarios WHERE username = ? OR email = ?";
+    
     $stmt = $conn->prepare($sql);
-
-    // 5. Bind dos Parâmetros
-    $stmt->bindParam(':login_input', $login_input);
-    $stmt->bindParam(':senha_input', $senha_input);
-    
-    // 6. Execução da Query
-    $stmt->execute();
-    
-    // 7. Busca o resultado
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($usuario) {
-        // Sucesso: Credenciais válidas
-        
-        // Armazena o nome do usuário na sessão para ser exibido em home.php
-        $_SESSION['login_nome'] = $usuario['login_nome'];
-        
-        // Redireciona para home.php
-        header("Location: home.php");
-        exit();
-
-    } else {
-        // Falha: Credenciais inválidas
-        $mensagem_erro = "Erro: E-mail ou senha inválidos. Tente novamente.";
-        
-        // Exibe mensagem de erro e link para voltar ao login
-        echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Erro de Login</title><link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet'></head><body><div class='container mt-5 text-center'><div class='alert alert-danger' role='alert'>$mensagem_erro</div><a href='index.html' class='btn btn-primary'>Voltar ao Login</a></div></body></html>";
+    if ($stmt === false) {
+        die("Erro ao preparar a consulta: " . $conn->error);
     }
 
-} catch (PDOException $e) {
-    // Erro na execução da query SQL
-    $mensagem_erro_db = "Erro interno do sistema ao verificar login: " . $e->getMessage();
+    // "ss" informa que estamos passando dois parâmetros do tipo string
+    $stmt->bind_param("ss", $login_identifier, $login_identifier);
     
-    echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Erro de Sistema</title><link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet'></head><body><div class='container mt-5 text-center'><div class='alert alert-danger' role='alert'>$mensagem_erro_db</div><a href='index.html' class='btn btn-warning'>Voltar ao Login</a></div></body></html>";
+    // 7. Executar e obter resultados
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // 8. Verificar se o usuário foi encontrado (deve ser 1 resultado)
+    if ($result->num_rows == 1) {
+        
+        // Usuário encontrado, buscar os dados
+        $user = $result->fetch_assoc();
+        $senha_hash_db = $user['senha']; // Pega a senha criptografada do banco
+
+        // 9. Verificar a senha
+        // Compara a senha digitada ($senha_digitada) com a senha hash ($senha_hash_db)
+        if (password_verify($senha_digitada, $senha_hash_db)) {
+            
+            // Senha correta! Login bem-sucedido.
+            
+            // 10. Armazenar dados do usuário na sessão
+            $_SESSION['loggedin'] = true;
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['nome'] = $user['nome']; // Útil para mostrar "Olá, [Nome]!"
+
+            // 11. Redirecionar para uma página protegida (ex: dashboard.php)
+            header("Location: paginicial.html"); // Você precisará criar esta página
+            exit; // Garante que o script pare após o redirecionamento
+
+        } else {
+            // Senha incorreta
+            // NOTA: É uma boa prática de segurança usar a mesma mensagem de erro
+            echo "Usuário ou senha inválidos. <a href='login.html'>Tentar novamente</a>";
+        }
+
+    } else {
+        // Usuário não encontrado (0 resultados ou mais de 1, o que não deve acontecer)
+        echo "Usuário ou senha inválidos. <a href='login.html'>Tentar novamente</a>";
+    }
+
+    // Fechar o statement
+    $stmt->close();
+
+} else {
+    // Se alguém tentar acessar login.php diretamente sem enviar o formulário
+    header("Location: login.html");
+    exit;
 }
 
-// 8. Fecha a conexão
-$conn = null;
+// Fechar a conexão
+$conn->close();
 ?>

@@ -1,3 +1,18 @@
+<?php
+// Inicia a sessão
+session_start();
+
+// Verifica se o usuário NÃO está logado
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    // Se não estiver logado, expulsa ele de volta para o login
+    header("Location: login.html");
+    exit;
+}
+
+// Se chegou aqui, o usuário está logado!
+// Você pode até dar boas-vindas:
+$nome_usuario = htmlspecialchars($_SESSION['nome']);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -7,39 +22,29 @@
 </head>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
     @font-face {
-        font-family: "cocogoose";
-        src:
-        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
-        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
-        url("fontes/cocogoose/Medium.ttf") format("ttf");
+        font-family: "Louis George Cafe";
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
     }
 
     @font-face {
-        font-family: "mousse";
-        src:
-        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    font-family: "mousse";
+    src:
+    url("fontes/mousse/Mousse-Regular.otf") format("otf");
     }
 
-    @font-face {
-        font-family: 'Roboto'; 
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
-        unicode-range: U+0030-0039;
-    }
-
+        
     body {
-        font-family: 'roboto', 'cocogoose';
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        font-weight: 500; 
         font-size: 22px;
         background-color: #FFF9EA;
         margin: 0;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .logo img {
@@ -54,7 +59,7 @@
     .personalizar p{
         text-align: center;
         font-size: 50px;
-        margin-top: 50px;
+        margin-top: 30px;
         margin-bottom: 0;
         color: #86A754;
         font-family: 'mousse', Arial, sans-serif;
@@ -80,10 +85,10 @@
         padding: 14px 32px;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 19px;
+        font-size: 25px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16);
         margin-top: 30px;
-        font-family: cocogoose, Arial, sans-serif;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
     }
 
     .opcoes {
@@ -101,8 +106,8 @@
         border: 1px solid #9EC662;
         border-radius: 10px;
         text-align: center;
-        font-size: 16px;
-        font-family: cocogoose, Arial, sans-serif;
+        font-size: 20px;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
         color: #333;
         background-color: transparent;
         cursor: pointer;
@@ -110,7 +115,6 @@
         box-shadow: 0 3px 3px #F8694D40;
         }
 
-        /* Estilo para o botão QUANDO ele tiver a classe "selecionado" */
     .option-btn.selecionado {
         background-color: #9EC662;
         color: #FFF9EA;

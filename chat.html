@@ -7,35 +7,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
-    @font-face {
-        font-family: "cocogoose";
-        src:
-        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
-        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
-        url("fontes/cocogoose/Medium.ttf") format("ttf");
+@font-face {
+        font-family: "Louis George Cafe";
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
     }
 
-    @font-face {
-        font-family: "mousse";
-        src:
-        url("fontes/mousse/Mousse-Regular.otf") format("otf");
-    }
 
     @font-face {
-        font-family: 'Roboto'; 
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
-        unicode-range: U+0030-0039;
+    font-family: "mousse";
+    src:
+    url("fontes/mousse/Mousse-Regular.otf") format("otf");
     }
 
+        
     body {
-        font-family: 'roboto', 'cocogoose';
-        font-size: 22px;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        font-weight: 500; 
+        font-size: 20px;
         background-color: #FFF9EA;
         margin: 0;
         min-height: 100vh;
@@ -45,21 +33,17 @@
         align-items: center;
     }
 
-    /* O contêiner principal que cria as 3 colunas */
     .container {
         display: grid;
         grid-template-columns: 250px 1fr 300px;
-        gap: 20px; /* Espaço entre as colunas */
-        max-width: 1400px; /* Largura máxima do site */
-        margin: 0 auto; /* Centraliza o site na tela */
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto; 
         padding: 20px;
     }
 
-    /* Estilos da Coluna Esquerda (Navegação) */
     .sidebar-left {
-        position: sticky; /* Deixa o menu fixo ao rolar a página */
-        top: 20px;
-        height: 95vh;
+        position: sticky; 
     }
 
     .sidebar-left .logo img {
@@ -86,7 +70,7 @@
 
     .sidebar-left ul li a i {
         margin-right: 15px;
-        width: 20px; /* Alinha os ícones */
+        width: 20px; 
     }
 
     .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
@@ -94,17 +78,16 @@
         color: white;
     }
 
-    /* Estilos da Coluna Direita (Ferramentas) */
     .sidebar-right {
         position: sticky;
         top: 20px;
     }
 
     .user-tools {
-        background-color: #C8E6C9; /* Tom de verde do header original */
-        padding: 15px;
+        background-color: #C8E6C9;
         border-radius: 12px;
         width: 400px;
+        padding: 20px;
     }
 
     .search-bar {
@@ -137,7 +120,7 @@
     .user-avatar {
         width: 40px;
         height: 40px;
-        border-radius: 50%; /* Isso já deixa a imagem redonda */
+        border-radius: 50%; 
         margin-right: 10px;
         object-fit: cover; 
         background-color: #F8694D; 
@@ -154,7 +137,6 @@
         overflow: hidden;
     }
 
-    /* --- Coluna da Esquerda: Sidebar --- */
     .sidebar {
         width: 300px;
         flex-shrink: 0;
@@ -244,7 +226,6 @@
     }
         
 
-    /* --- Coluna da Direita: Área do Chat --- */
     .chat-area {
         flex-grow: 1;
         display: flex;
@@ -283,12 +264,12 @@
     }
         
     .message.sent {
-        margin-left: auto; /* Alinha à direita */
+        margin-left: auto;
         flex-direction: row-reverse;
     }
 
     .message.received {
-        margin-right: auto; /* Alinha à esquerda */
+        margin-right: auto; 
     }
         
     .message.sent .bubble {
@@ -301,7 +282,6 @@
         border-bottom-left-radius: 5px;
     }
         
-    /* Input do Chat */
     .chat-input-area {
         padding: 20px;
         background-color: #f5f7f6;

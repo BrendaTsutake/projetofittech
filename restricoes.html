@@ -6,31 +6,21 @@
     <title>Restrições</title>
 
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
     @font-face {
-        font-family: "cocogoose";
-        src:
-        url("fontes/cocogoose/ExtraBold.ttf") format("ttf");
+        font-family: "Louis George Cafe";
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
     }
 
     @font-face {
-        font-family: "mousse";
-        src:
-        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    font-family: "mousse";
+    src:
+    url("fontes/mousse/Mousse-Regular.otf") format("otf");
     }
 
-    @font-face {
-        font-family: 'Roboto'; 
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
-        unicode-range: U+0030-0039;
-        }
-
+        
     body {
-        font-family: 'cocogoose', Arial, sans-serif;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        font-weight: 500; 
         font-size: 22px;
         background-color: #FFF9EA;
         margin: 0;
@@ -55,7 +45,7 @@
         font-size: 50px;
         margin-top: 50px;
         margin-bottom: 0;
-        font-family: 'cocogoose', Arial, sans-serif;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
         color: #9EC662;
     }
 
@@ -69,16 +59,20 @@
 
     input[type="checkbox"]{
         margin-right: 10px;
-        transform: scale(1.8);
+        transform: scale(1.4); 
+        transform-origin: center; 
         cursor: pointer;
-        margin-bottom: 17px;
+        vertical-align: middle;
+        
     }
 
     .botao {
         margin-top: 20px;
-        width: 100%;
+        width: auto; 
         display: flex;
         justify-content: center;
+        align-items: center;
+        gap: 24px; 
     }
 
     .botao button {
@@ -88,20 +82,44 @@
         padding: 14px 32px;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 19px;
+        font-size: 25px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16);
         margin-top: 30px;
-        font-family: cocogoose, Arial, sans-serif;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        margin-left: 0; 
     }
 
     input[type="text"]{
-        margin-left: 35px;
-        font-family: 'cocogoose', Arial, sans-serif;
+        margin-left: 45px;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
         transform: scale(1.4);
         cursor: pointer;
-        font-size: 12px;
+        font-size: 14px;
         margin-bottom: 17px;
         width: 175px;
+    }
+
+    .restricoes-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px; 
+        margin-top: 20px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center; /* garante que checkbox e label fiquem na mesma linha */
+        justify-content: flex-start;
+        gap: 12px;       
+        width: 320px;   
+        margin: 0;      
+    }
+    .checkbox-item label {
+        margin: 0;
+        line-height: 1;
+        vertical-align: middle;
+        font-size: 22px; /* ajuste conforme seu design */
     }
     </style>
 
@@ -129,22 +147,22 @@
 
         <div class="checkbox-item">
             <input type="checkbox" id="vegetariano" name="restricao" value="vegetariano">
-            <label for="vegetariano">vegetariano</label>
+            <label for="vegetariano">Vegetariano</label>
         </div>
 
         <div class="checkbox-item">
             <input type="checkbox" id="vegano" name="restricao" value="vegano">
-            <label for="vegano">vegano</label>
+            <label for="vegano">Vegano</label>
         </div>
 
         <div class="checkbox-item">
             <input type="checkbox" id="gluten" name="restricao" value="gluten">
-            <label for="gluten">intolerante a glúten</label>
+            <label for="gluten">Intolerante a glúten</label>
         </div>
 
         <div class="checkbox-item">
             <input type="checkbox" id="lactose" name="restricao" value="lactose">
-            <label for="lactose">intolerante a lactose</label>
+            <label for="lactose">Intolerante a lactose</label>
         </div>
 
         <div class="checkbox-item">

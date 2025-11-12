@@ -9,34 +9,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
     @font-face {
-        font-family: "cocogoose";
-        src:
-        url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
-        url("fontes/cocogoose/ultralight.ttf") format("ttf"),
-        url("fontes/cocogoose/Medium.ttf") format("ttf");
+        font-family: "Louis George Cafe";
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
     }
 
     @font-face {
-        font-family: "mousse";
-        src:
-        url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    font-family: "mousse";
+    src:
+    url("fontes/mousse/Mousse-Regular.otf") format("otf");
     }
 
-    @font-face {
-        font-family: 'Roboto'; 
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
-        unicode-range: U+0030-0039;
-    }
-
+        
     body {
-        font-family: 'roboto', 'cocogoose';
-        font-size: 22px;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        font-weight: 500; 
+        font-size: 20px;
         background-color: #FFF9EA;
         margin: 0;
         min-height: 100vh;
@@ -46,20 +34,17 @@
         align-items: center;
     }
 
-/* O contêiner principal que cria as 3 colunas */
     .container {
         display: grid;
-        /* Define 3 colunas: a 1ª e 3ª com largura fixa, a 2ª (feed) ocupa o espaço restante */
         grid-template-columns: 250px 1fr 300px;
-        gap: 20px; /* Espaço entre as colunas */
-        max-width: 1400px; /* Largura máxima do site */
-        margin: 0 auto; /* Centraliza o site na tela */
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto;
         padding: 20px;
     }
 
-    /* Estilos da Coluna Esquerda (Navegação) */
     .sidebar-left {
-        position: sticky; /* Deixa o menu fixo ao rolar a página */
+        position: sticky; 
         top: 20px;
         height: 95vh;
     }
@@ -80,7 +65,7 @@
         padding: 15px;
         text-decoration: none;
         color: #555;
-        font-size: 18px;
+        font-size: 20px;
         border-radius: 8px;
         margin-bottom: 10px;
         font-weight: bold;
@@ -88,7 +73,7 @@
 
     .sidebar-left ul li a i {
         margin-right: 15px;
-        width: 20px; /* Alinha os ícones */
+        width: 20px; 
     }
 
     .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
@@ -102,7 +87,7 @@
     }
 
     .user-tools {
-        background-color: #C8E6C9; /* Tom de verde do header original */
+        background-color: #C8E6C9; 
         padding: 15px;
         border-radius: 12px;
         width: 400px;
@@ -131,7 +116,7 @@
     }
 
     .tool-icons a {
-        font-size: 22px;
+        font-size: 24px;
         color: #333;
     }
 
@@ -143,14 +128,13 @@
         color: #86A754;
     }
 
-    /* === Estilos das Notificações === */
     .feed h2 {
-        font-family: 'cocogoose';
+        font-family: 'Louis George Cafe';
         margin-left: 245px;
         font-weight: bold;
         color: #333;
         margin-bottom: 25px;
-        font-size: 28px;
+        font-size: 35px;
     }
 
     .notification-card {
@@ -173,8 +157,8 @@
     }
 
     .notification-text {
-        font-family: 'cocogoose';
-        font-size: 15px;
+        font-family: 'Louis George Cafe';
+        font-size: 18px;
         line-height: 1.5;
         font-weight: 500;
     }

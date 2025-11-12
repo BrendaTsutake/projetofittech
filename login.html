@@ -5,34 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+    @font-face {
+        font-family: "Louis George Cafe";
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
+    }
 
-@font-face {
-    font-family: "cocogoose";
-    src:
-    url("fontes/cocogoose/ExtraBold.ttf") format("ttf"),
-    url("fontes/cocogoose/ultralight.ttf") format("ttf"),
-    url("fontes/cocogoose/Medium.ttf") format("ttf");
-}
-
-@font-face {
+    @font-face {
     font-family: "mousse";
     src:
     url("fontes/mousse/Mousse-Regular.otf") format("otf");
-}
-
-@font-face {
-        font-family: 'Roboto'; 
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2) format('woff2');
-        unicode-range: U+0030-0039;
     }
 
-        body {
-        font-family: 'roboto', 'cocogoose';
-        font-size: 22px;
+        
+    body {
+        font-family: 'Louis George Cafe', Arial, sans-serif;
+        font-weight: 500; 
+        font-size: 20px;
         background-color: #FFF9EA;
         margin: 0;
         min-height: 100vh;
@@ -40,7 +28,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        }
+    }
 
     .container-central {
         display: flex;
@@ -88,9 +76,9 @@
         margin: 8px 0;
         border: 1px solid #ccc;
         border-radius: 8px;
-        font-size: 16px;
+        font-size: 20px;
         box-shadow: 0 3px 3px #9EC662;
-        font-family: cocogoose, Arial, sans-serif;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
     }
 
     .botao {
@@ -107,10 +95,10 @@
         padding: 14px 32px;
         border-radius: 8px;
         cursor: pointer;
-        font-size: 19px;
+        font-size: 25px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16);
         margin-top: 30px;
-        font-family: cocogoose, Arial, sans-serif;
+        font-family: 'Louis George Cafe', Arial, sans-serif;
     }
 
     .cadastro {
@@ -122,13 +110,17 @@
     .cadastro p {
         text-align: center;
         margin-top: 30px;
-        font-size: 17px;
+        font-size: 22px;
     }
 
     .cadastro a {
         color: #9EC662;
         text-decoration: none;
-        font-size: 17px;
+        font-size: 22px;
+    }
+
+    .label {
+        font-size: 22px;
     }
 
     </style>
@@ -144,12 +136,12 @@
         </div>
 
         <div class="login-form">
-            <form action="process_login.php" method="POST">
-                <div>
+            <form action="login.php" method="POST">
+                <div class="label">
                     <label for="username">Usuário</label>
                     <input type="text" id="username" name="username" placeholder="username ou e-mail" required>
                 </div>
-                <div style="margin-top: 10px;">
+                <div class="label" style="margin-top: 10px;">
                     <label for="password">Senha</label>
                     <input type="password" id="senha" name="senha" placeholder="senha" required>
                 </div>
