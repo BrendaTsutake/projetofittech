@@ -109,7 +109,7 @@
 
     .checkbox-item {
         display: flex;
-        align-items: center; /* garante que checkbox e label fiquem na mesma linha */
+        align-items: center;
         justify-content: flex-start;
         gap: 12px;       
         width: 320px;   
@@ -119,7 +119,7 @@
         margin: 0;
         line-height: 1;
         vertical-align: middle;
-        font-size: 22px; /* ajuste conforme seu design */
+        font-size: 22px;
     }
     </style>
 
@@ -128,7 +128,7 @@
 <body>
 
     <div class="logo">
-        <img src="img/logo.png" alt="Logo">
+        <img src="img/Group 70.png" alt="Logo">
     </div>
 
     <div class="restricoes">
@@ -139,44 +139,45 @@
         <p>Estamos montando seu plano personalizado. Priorizando tornar o mais acessível possível.</p>
     </div>
 
-    <form class="restricoes-form">
+    <form class="restricoes-form" method="POST" action="processa_restricoes.php">
+        
         <div class="checkbox-item">
-            <input type="checkbox" id="sem-restricoes" name="restricao" value="nenhuma">
+            <input type="checkbox" id="sem-restricoes" name="restricoes[]" value="nenhuma">
             <label for="sem-restricoes">Sem restrições</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="vegetariano" name="restricao" value="vegetariano">
+            <input type="checkbox" id="vegetariano" name="restricoes[]" value="vegetariano">
             <label for="vegetariano">Vegetariano</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="vegano" name="restricao" value="vegano">
+            <input type="checkbox" id="vegano" name="restricoes[]" value="vegano">
             <label for="vegano">Vegano</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="gluten" name="restricao" value="gluten">
+            <input type="checkbox" id="gluten" name="restricoes[]" value="gluten">
             <label for="gluten">Intolerante a glúten</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="lactose" name="restricao" value="lactose">
+            <input type="checkbox" id="lactose" name="restricoes[]" value="lactose">
             <label for="lactose">Intolerante a lactose</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="acucar" name="restricao" value="acucar">
+            <input type="checkbox" id="acucar" name="restricoes[]" value="acucar">
             <label for="acucar">Sem açúcar adicionado</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="low-carb" name="restricao" value="low-carb">
+            <input type="checkbox" id="low-carb" name="restricoes[]" value="low-carb">
             <label for="low-carb">Low Carb</label>
         </div>
 
         <div class="checkbox-item">
-            <input type="checkbox" id="alergia" name="restricao" value="alergia">
+            <input type="checkbox" id="alergia" name="restricoes[]" value="alergia">
             <label for="alergia">Alergia a alimentos</label>
         </div>
 
@@ -184,11 +185,12 @@
             <label for="alergia-detalhes">Se sim, qual?</label>
             <input type="text" id="alergia-detalhes" name="alergia_detalhes" placeholder="Digite o nome do alimento">
         </div>
-    </form>
 
         <div class="botao">
-            <button class="btn btn-secondary">Voltar</button>
-            <button class="btn btn-primary">Avançar</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='personalizar.php'">Voltar</button>
+            
+            <button type="submit" class="btn btn-primary">Avançar</button>
         </div>
-</body>
+        
+    </form> </body>
 </html>

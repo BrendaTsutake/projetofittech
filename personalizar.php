@@ -9,8 +9,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-// Se chegou aqui, o usuário está logado!
-// Você pode até dar boas-vindas:
 $nome_usuario = htmlspecialchars($_SESSION['nome']);
 ?>
 <!DOCTYPE html>
@@ -125,63 +123,77 @@ $nome_usuario = htmlspecialchars($_SESSION['nome']);
 <body>
 
     <div class="logo">
-        <img src="img/logo.png" alt="Logo FitTech">
+        <img src="img/Group 70.png" alt="Logo FitTech"> 
     </div>
 
-        <div class="personalizar">
-            <p>Personalizar Plano</p>
-        </div>
+    <div class="personalizar">
+        <p>Personalizar Plano</p>
+    </div>
 
-        <div class="explicando">
-            <p>Personalizar seu plano através das suas informações. 
+    <div class="explicando">
+        <p>Personalizar seu plano através das suas informações.
             Encontre uma forma de manter a vida saudável.</p>
-        </div>
+    </div>
+
+    <form id="metasForm" action="processa_personalizar.php" method="POST">
 
         <div class="opcoes">
-            <button class="option-btn" data-value="iniciar-vida-saudavel">Iniciar a vida saudável</button>
-            <button class="option-btn" data-value="manter-vida-saudavel">Manter a vida saudável</button>
-            <button class="option-btn" data-value="ganho-massa-muscular">Ganho de massa muscular</button>
-            <button class="option-btn" data-value="perder-peso">Perder peso</button>
-            <button class="option-btn" data-value="melhoria-qualidade-sono">Melhoria da qualidade de sono</button>
-            <button class="option-btn" data-value="prevencao-doencas">Prevenção de doenças</button>
-            <button class="option-btn" data-value="aumento-autoestima">Aumento da autoestima</button>
-            <button class="option-btn" data-value="outros">Outros</button>
+            <button type="button" class="option-btn" data-value="iniciar-vida-saudavel">Iniciar a vida saudável</button>
+            <button type="button" class="option-btn" data-value="manter-vida-saudavel">Manter a vida saudável</button>
+            <button type="button" class="option-btn" data-value="ganho-massa-muscular">Ganho de massa muscular</button>
+            <button type="button" class="option-btn" data-value="perder-peso">Perder peso</button>
+            <button type="button" class="option-btn" data-value="melhoria-qualidade-sono">Melhoria da qualidade de sono</button>
+            <button type="button" class="option-btn" data-value="prevencao-doencas">Prevenção de doenças</button>
+            <button type="button" class="option-btn" data-value="aumento-autoestima">Aumento da autoestima</button>
+            <button type="button" class="option-btn" data-value="outros">Outros</button>
         </div>
+
+        <input type="hidden" name="metas_selecionadas" id="metas_selecionadas_hidden">
 
         <div class="botao">
-            <button type="button" onclick="window.location.href='restricoes.html'">Avançar</button>
+            <button type="submit" id="avancarBtn">Avançar</button>
         </div>
-    </body>
-    
-    <script>
+
+    </form> </body>
+
+<script>
+    // Seu script de selecionar/deselecionar
+    const todosOsBotoes = document.querySelectorAll('.option-btn');
+    todosOsBotoes.forEach(function(botao) {
+        botao.addEventListener('click', function() {
+            botao.classList.toggle('selecionado');
+        });
+    });
+
+    // O JavaScript que salva os dados
+    document.getElementById('metasForm').addEventListener('submit', function(event) {
         
-        const todosOsBotoes = document.querySelectorAll('.option-btn');
-
-        // 2. Adiciona um evento de clique para cada um deles
-        todosOsBotoes.forEach(function(botao) {
-            botao.addEventListener('click', function() {
-                // 3. A mágica acontece aqui:
-                // Adiciona a classe 'selecionado' se não tiver, e remove se já tiver.
-                botao.classList.toggle('selecionado');
-            });
+        // Encontra os botões selecionados
+        const botoesSelecionados = document.querySelectorAll('.option-btn.selecionado');
+        const valoresSelecionados = [];
+        
+        // Pega o "data-value" de cada um
+        botoesSelecionados.forEach(function(botao) {
+            valoresSelecionados.push(botao.dataset.value);
         });
 
-        document.getElementById('avancarBtn').addEventListener('click', function() {
-            // Encontra todos os botões que TÊM a classe 'selecionado'
-            const botoesSelecionados = document.querySelectorAll('.option-btn.selecionado');
+        // Verifica se pelo menos um foi selecionado
+        if (valoresSelecionados.length > 0) {
             
-            const valoresSelecionados = [];
+            // Se sim, junta os valores
+            const valoresString = valoresSelecionados.join(',');
             
-            botoesSelecionados.forEach(function(botao) {
-                valoresSelecionados.push(botao.dataset.value);
-            });
+            // Coloca essa string no campo invisível
+            document.getElementById('metas_selecionadas_hidden').value = valoresString;
+            
+            // 6. Permite o envio do formulário
 
-            if (valoresSelecionados.length > 0) {
-                alert('Opções selecionadas: ' + valoresSelecionados.join(', '));
-                console.log('Opções selecionadas:', valoresSelecionados);
-            } else {
-                alert('Por favor, selecione ao menos uma opção.');
-            }
-        });
-    </script>
+
+        } else {
+            // 7. Se não selecionou nada, impede o envio e avisa
+            event.preventDefault(); 
+            alert('Por favor, selecione ao menos uma opção.');
+        }
+    });
+</script>
 </html>

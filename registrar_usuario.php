@@ -1,5 +1,5 @@
 <?php
-// 1. Iniciar a sessão (necessário para o auto-login)
+// 1. Iniciar a sessão 
 session_start();
 
 // Configurações do Banco de Dados
@@ -20,12 +20,11 @@ if ($conn->connect_error) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 4. Obter os dados do formulário
-    // Usamos trim() para remover espaços em branco no início/fim
     $nome = trim($_POST['nome']);
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $confirmar_email = trim($_POST['confirmar_email']);
-    $senha = $_POST['confirmar_senha']; // Senha não deve ter trim
+    $senha = $_POST['senha']; // Senha não deve ter trim
     $confirmar_senha = $_POST['confirmar_senha'];
 
     // 5. VALIDAÇÕES DO SERVIDOR
