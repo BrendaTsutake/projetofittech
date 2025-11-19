@@ -17,6 +17,7 @@ $nome_usuario = htmlspecialchars($_SESSION['nome']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalizar plano</title>
+    <link rel="icon" href="img/logo-img.png" type="image/png">
 </head>
 
 <style>

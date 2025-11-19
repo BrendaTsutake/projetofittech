@@ -1,19 +1,69 @@
 <?php
-// Inicia a sessão
+// 1. Inicia a sessão e configura fuso horário
+date_default_timezone_set('America/Sao_Paulo');
 session_start();
 
-// Verifica se o usuário NÃO está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
 
-// Lógica para pegar os 7 dias da semana atual
+// 2. Conecta ao banco
+$servername = "localhost"; $username_db = "root"; $password_db = ""; $dbname = "mydb";
+$conn = new mysqli($servername, $username_db, $password_db, $dbname);
+if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
+
+$id_usuario = $_SESSION['id'];
+
+// 3. BUSCA DADOS PARA O CÁLCULO
+$sql_user = "SELECT peso_atual, altura, idade, genero, frequencia_exercicio, objetivo FROM usuarios WHERE id = ?";
+$stmt = $conn->prepare($sql_user);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result_user = $stmt->get_result();
+$user = $result_user->fetch_assoc();
+
+// 4. CÁLCULO DA META
+$peso   = ($user['peso_atual'] > 0) ? $user['peso_atual'] : 70; 
+$altura = ($user['altura'] > 0) ? $user['altura'] : 170;
+$idade  = ($user['idade'] > 0) ? $user['idade'] : 30;
+$genero = $user['genero'] ? strtolower($user['genero']) : 'masculino';
+$atividade = $user['frequencia_exercicio'];
+$objetivo = $user['objetivo'];
+
+// Taxa Metabólica Basal
+if ($genero == 'feminino' || $genero == 'mulher') {
+    $tmb = 447.6 + (9.2 * $peso) + (3.1 * $altura) - (4.3 * $idade);
+} else {
+    $tmb = 88.36 + (13.4 * $peso) + (4.8 * $altura) - (5.7 * $idade);
+}
+
+// Fator de Atividade
+$fator = 1.2; 
+if ($atividade == 'Levemente ativo') $fator = 1.375;
+if ($atividade == 'Ativo') $fator = 1.55;
+if ($atividade == 'Muito ativo') $fator = 1.725;
+
+$gasto_total = $tmb * $fator;
+
+// Ajuste pelo Objetivo
+$meta_diaria = $gasto_total; 
+if (stripos($objetivo, 'Perder') !== false) {
+    $meta_diaria -= 500; 
+} elseif (stripos($objetivo, 'Ganhar') !== false) {
+    $meta_diaria += 500; 
+}
+
+$meta_diaria = round(max(1200, $meta_diaria));
+$meta_semanal = $meta_diaria * 7;
+
+$conn->close();
+
+// Dias da semana
 $diasDaSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 $hoje = new DateTime();
-$hojeIndex = (int)$hoje->format('w'); 
+$hojeIndex = (int)$hoje->format('w');
 $dataHojeStr = $hoje->format('Y-m-d');
-
 $semana = [];
 for ($i = 0; $i < 7; $i++) {
     $data = new DateTime();
@@ -33,247 +83,253 @@ for ($i = 0; $i < 7; $i++) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Refeição</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="icon" href="img/logo-img.png" type="image/png">
     <style>
-    @font-face {
-        font-family: "Louis George Cafe";
-        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype");
+    @font-face { 
+        font-family: "Louis George Cafe"; 
+        src: 
+        url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype"); 
     }
-    @font-face {
-        font-family: "mousse";
-        src: url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    @font-face { 
+        font-family: "mousse"; 
+        src: url("fontes/mousse/Mousse-Regular.otf") format("otf"); 
     }
-    body {
-        font-family: 'Louis George Cafe', Arial, sans-serif;
+    body { 
+        font-family: 'Louis George Cafe', Arial, sans-serif; 
         font-weight: 500; 
-        font-size: 22px;
-        background-color: #FFF9EA;
-        margin: 0;
-        min-height: 100vh;
+        font-size: 22px; 
+        background-color: #FFF9EA; 
+        margin: 0; 
+        min-height: 100vh; 
     }
-    .container {
-        display: grid;
-        grid-template-columns: 250px 1fr 300px;
-        gap: 20px;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
+    .container { 
+        display: grid; 
+        grid-template-columns: 250px 1fr 300px; 
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto; 
+        padding: 20px; 
     }
-    .sidebar-left {
-        position: sticky;
-        top: 20px;
-        height: 95vh;
+    .sidebar-left { 
+        position: sticky; 
+        top: 20px; 
+        height: 95vh; 
     }
-    .sidebar-left .logo img {
-        width: 150px;
-        margin-bottom: 30px;
+    .sidebar-left .logo img { 
+        width: 150px; 
+        margin-bottom: 30px; 
     }
-    .sidebar-left ul {
-        list-style: none;
-        padding: 0;
+    .sidebar-left ul { 
+        list-style: none; 
+        padding: 0; 
     }
-    .sidebar-left ul li a {
-        display: flex;
-        align-items: center;
-        padding: 15px;
-        text-decoration: none;
-        color: #555;
-        font-size: 18px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        font-weight: bold;
+    .sidebar-left ul li a { 
+        display: flex; 
+        align-items: center; 
+        padding: 15px; 
+        text-decoration: none; 
+        color: #555; 
+        font-size: 18px; 
+        border-radius: 8px; 
+        margin-bottom: 10px; 
+        font-weight: bold; 
     }
-    .sidebar-left ul li a i {
-        margin-right: 15px;
-        width: 20px;
+    .sidebar-left ul li a i { 
+        margin-right: 15px; 
+        width: 20px; 
     }
-    .sidebar-left ul li a:hover, .sidebar-left ul li a.active {
-        background-color: #F8694D;
-        color: white;
+    .sidebar-left ul li a:hover, .sidebar-left ul li a.active { 
+        background-color: #F8694D; 
+        color: white; 
     }
-    .sidebar-right {
-        position: sticky;
-        top: 20px;
+    .sidebar-right { 
+        position: sticky; 
+        top: 20px; 
     }
-    .user-tools {
-        background-color: #C8E6C9;
-        padding: 15px;
-        border-radius: 12px;
-        width: 400px;
-        margin-bottom: 20px; /* Espaço para o total de Kcal */
+    .user-tools { 
+        background-color: #C8E6C9; 
+        padding: 15px; 
+        border-radius: 12px; 
+        width: 400px; 
+        margin-bottom: 20px; 
     }
-    .search-bar {
-        display: flex;
-        align-items: center;
-        background-color: white;
-        padding: 8px;
-        border-radius: 20px;
-        margin-bottom: 20px;
+    .search-bar { 
+        display: flex; 
+        align-items: center; 
+        background-color: white; 
+        padding: 8px; 
+        border-radius: 20px; 
+        margin-bottom: 20px; 
     }
-    .search-bar input {
-        border: none;
-        outline: none;
-        background: none;
-        width: 100%;
-        margin-left: 8px;
+    .search-bar input { 
+        border: none; 
+        outline: none; 
+        background: none; 
+        width: 100%; 
+        margin-left: 8px; 
     }
-    .tool-icons {
-        display: flex;
-        justify-content: space-around;
+    .tool-icons { 
+        display: flex; 
+        justify-content: space-around; 
     }
-    .tool-icons a {
-        font-size: 22px;
-        color: #333;
+    .tool-icons a { 
+        font-size: 22px; 
+        color: #333; 
     }
-    .feed-content {
-        padding: 10px;
+    .feed-content { 
+        padding: 10px; 
     }
-    .feed-header {
-        text-align: center;
-        margin-bottom: 30px;
-        font-weight: bold;
-        color: #555;
-        font-size: 40px;
+    .feed-header { 
+        text-align: center; 
+        margin-bottom: 30px; 
+        font-weight: bold; 
+        color: #555; 
+        font-size: 40px; 
     }
-    .week-navigator {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        margin-bottom: 40px;
+    .week-navigator { 
+        display: flex; 
+        justify-content: space-around; 
+        align-items: center; 
+        margin-bottom: 40px; 
     }
-    .day {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
+    .day { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        cursor: pointer; 
     }
-    .day-circle {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        border: 2px solid #ccc;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 8px;
-        transition: all 0.2s;
-        font-weight: bold;
+    .day-circle { 
+        width: 45px; 
+        height: 45px; 
+        border-radius: 50%; 
+        border: 2px solid #ccc; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        margin-bottom: 8px; 
+        transition: all 0.2s; 
+        font-weight: bold; 
     }
-    .day span {
-        font-size: 18px;
-        text-transform: uppercase;
-        font-weight: bold;
-        color: #888;
+    .day span { 
+        font-size: 18px; 
+        text-transform: uppercase; 
+        font-weight: bold; color: #888; 
     }
-    .day.active .day-circle {
-        border-color: #F8694D;
-        background-color: #F8694D;
-        color: white;
+    .day.active .day-circle { 
+        border-color: #F8694D; 
+        background-color: #F8694D; 
+        color: white; 
     }
-    .day.active span {
-        color: #F8694D;
+    .day.active span { 
+        color: #F8694D; 
     }
-    
-    .meal-item {
-        background-color: #E8F5E9;
-        border-radius: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    .meal-item { 
+        background-color: #E8F5E9; 
+        border-radius: 15px; 
+        margin-bottom: 15px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
     }
-    .meal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px;
-        cursor: pointer;
-        transition: transform 0.2s;
+    .meal-header { 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 20px; 
+        cursor: pointer; 
+        transition: transform 0.2s; 
     }
-    .meal-header:hover {
-        transform: translateY(-3px);
+    .meal-header:hover { 
+        transform: translateY(-3px); 
     }
-    .meal-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
+    .meal-info { 
+        display: flex; 
+        align-items: center; 
+        gap: 15px; 
     }
-    .meal-info i {
-        font-size: 26px;
-        color: #555;
+    .meal-info i { 
+        font-size: 26px; 
+        color: #555; 
     }
-    .meal-info .meal-name {
-        font-size: 20px;
-        font-weight: bold;
-        color: #333;
+    .meal-info .meal-name { 
+        font-size: 20px; 
+        font-weight: bold; 
+        color: #333; 
     }
-    .meal-header > i.fa-plus {
-        font-size: 22px;
-        color: #555;
-        cursor: pointer;
+    .meal-header > i.fa-plus { 
+        font-size: 22px; 
+        color: #555; 
+        cursor: pointer; 
     }
-    .meal-content {
-        padding: 0 20px 20px 20px;
+    .meal-content { 
+        padding: 0 20px 20px 20px; 
         display: none; 
     }
-    .meal-content ul {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 15px 0;
+    .meal-content ul { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0 0 15px 0; 
     }
-    .meal-content li {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 0;
-        border-bottom: 1px solid #d4e9d5;
-        font-size: 18px;
+    .meal-content li { 
+        display: flex; 
+        justify-content: space-between; 
+        padding: 8px 0; 
+        border-bottom: 1px solid #d4e9d5; 
+        font-size: 18px; 
     }
-    .meal-content li span:first-child {
-        font-weight: bold;
-        color: #333;
+    .meal-content li span:first-child { 
+        font-weight: bold; 
+        color: #333; 
     }
-    .meal-content li span:last-child {
-        color: #F8694D;
-        font-weight: bold;
+    .meal-content li span:last-child { 
+        color: #F8694D; 
+        font-weight: bold; 
     }
-    .meal-content li .food-qty {
-        color: #555;
-        font-size: 16px;
-        margin-left: 10px;
+    .meal-content li .food-qty { 
+        color: #555; 
+        font-size: 16px; 
+        margin-left: 10px; 
     }
-    .meal-content li i {
-        cursor: pointer;
-        color: #888;
-        margin-left: 10px;
+    .meal-content li i { 
+        cursor: pointer; 
+        color: #888; 
+        margin-left: 10px; 
     }
-    .meal-content li i:hover {
-        color: #F8694D;
+    .meal-content li i:hover { 
+        color: #F8694D; 
     }
-    .meal-footer {
-        display: flex;
-        justify-content: space-between;
-        font-size: 18px;
-        font-weight: bold;
-        color: #333;
+    .meal-footer { 
+        display: flex; 
+        justify-content: space-between; 
+        font-size: 18px; 
+        font-weight: bold; 
+        color: #333; 
     }
-    .total-kcal-card {
-        background-color: #F8694D;
-        padding: 20px;
-        border-radius: 12px;
-        text-align: center;
+    
+    .total-kcal-card { 
+        background-color: #F8694D; 
+        padding: 20px; 
+        border-radius: 12px; 
+        text-align: center; 
+        margin-bottom: 20px; 
     }
-    .total-kcal-card h3 {
-        font-family: 'mousse', Arial, sans-serif;
-        color: #FFF9EA;
-        font-size: 30px;
-        margin: 0;
+    .total-kcal-card.weekly { 
+        background-color: #9EC662; 
     }
-    .total-kcal-card p {
-        font-size: 50px;
-        font-weight: bold;
-        color: #FFF9EA;
-        margin: 0;
+    .total-kcal-card h3 { 
+        font-family: 'mousse', Arial, sans-serif; 
+        color: #FFF9EA; 
+        font-size: 26px; 
+        margin: 0; 
+    }
+    .total-kcal-card p { 
+        font-size: 38px; 
+        font-weight: bold; 
+        color: #FFF9EA; 
+        margin: 0; 
+    }
+    .total-kcal-card span.meta-text { 
+        font-size: 20px; opacity: 0.8; 
     }
     </style>
 </head>
@@ -281,9 +337,7 @@ for ($i = 0; $i < 7; $i++) {
 
     <div class="container">
         <nav class="sidebar-left">
-            <div class="logo">
-                <img src="img/logo.png" alt="FitTech Logo">
-            </div>
+            <div class="logo"><img src="img/logo.png" alt="FitTech Logo"></div>
             <ul>
                 <li><a href="paginicial.php"><i class="fa-solid fa-house"></i> <span>Página Inicial</span></a></li>
                 <li><a href="refeicao.php" class="active"><i class="fa-solid fa-utensils"></i> <span>Refeições</span></a></li>
@@ -305,11 +359,15 @@ for ($i = 0; $i < 7; $i++) {
             </div>
 
             <div class="meals-list">
-                <div class="meal-item" data-meal-type="Café da Manhã">
+                <?php 
+                $tipos = ['Café da Manhã' => 'fa-sun', 'Almoço' => 'fa-cloud-sun', 'Jantar' => 'fa-moon', 'Snacks/Outros' => 'fa-cookie-bite'];
+                foreach ($tipos as $nome => $icone): 
+                ?>
+                <div class="meal-item" data-meal-type="<?php echo $nome; ?>">
                     <div class="meal-header">
                         <div class="meal-info">
-                            <i class="fa-solid fa-sun"></i>
-                            <span class="meal-name">Café da Manhã</span>
+                            <i class="fa-solid <?php echo $icone; ?>"></i>
+                            <span class="meal-name"><?php echo $nome; ?></span>
                         </div>
                         <i class="fa-solid fa-plus add-food-btn"></i>
                     </div>
@@ -321,75 +379,27 @@ for ($i = 0; $i < 7; $i++) {
                         </div>
                     </div>
                 </div>
-
-                <div class="meal-item" data-meal-type="Almoço">
-                    <div class="meal-header">
-                        <div class="meal-info">
-                            <i class="fa-solid fa-cloud-sun"></i>
-                            <span class="meal-name">Almoço</span>
-                        </div>
-                        <i class="fa-solid fa-plus add-food-btn"></i>
-                    </div>
-                    <div class="meal-content">
-                        <ul></ul>
-                        <div class="meal-footer">
-                            <span>Total Refeição</span>
-                            <span class="meal-total-kcal">0 kcal</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="meal-item" data-meal-type="Jantar">
-                    <div class="meal-header">
-                        <div class="meal-info">
-                            <i class="fa-solid fa-moon"></i>
-                            <span class="meal-name">Jantar</span>
-                        </div>
-                        <i class="fa-solid fa-plus add-food-btn"></i>
-                    </div>
-                    <div class="meal-content">
-                        <ul></ul>
-                        <div class="meal-footer">
-                            <span>Total Refeição</span>
-                            <span class="meal-total-kcal">0 kcal</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="meal-item" data-meal-type="Snacks/Outros">
-                    <div class="meal-header">
-                        <div class="meal-info">
-                            <i class="fa-solid fa-cookie-bite"></i>
-                            <span class="meal-name">Snacks/Outros</span>
-                        </div>
-                        <i class="fa-solid fa-plus add-food-btn"></i>
-                    </div>
-                    <div class="meal-content">
-                        <ul></ul>
-                        <div class="meal-footer">
-                            <span>Total Refeição</span>
-                            <span class="meal-total-kcal">0 kcal</span>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </main>
 
         <aside class="sidebar-right">
             <div class="user-tools">
-                <div class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Buscar...">
-                </div>
+                <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i> <input type="text" placeholder="Buscar..."></div>
                 <div class="tool-icons">
-                    <a href="calendario.php" title="Calendário"><i class="fa-solid fa-calendar-days"></i></a>
-                    <a href="perfil.php" title="Perfil"><i class="fa-solid fa-user"></i></a>
+                    <a href="calendario.php"><i class="fa-solid fa-calendar-days"></i></a>
+                    <a href="perfil.php"><i class="fa-solid fa-user"></i></a>
                 </div>
             </div>
             
             <div class="total-kcal-card">
                 <h3>Kcal Total (Dia)</h3>
-                <p id="day-total-kcal">0</p>
+                <p id="day-total-kcal">0 / <span class="meta-text"><?php echo $meta_diaria; ?></span></p>
+            </div>
+
+            <div class="total-kcal-card weekly">
+                <h3>Kcal da Semana</h3>
+                <p id="week-total-kcal">0 / <span class="meta-text"><?php echo $meta_semanal; ?></span></p>
             </div>
         </aside>
     </div>
@@ -399,22 +409,20 @@ for ($i = 0; $i < 7; $i++) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addFoodModalTitle">Adicionar Alimento</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addFoodForm">
-                        <input type="hidden" id="modal-data-refeicao" value="">
-                        <input type="hidden" id="modal-tipo-refeicao" value="">
-                        
+                        <input type="hidden" id="modal-data-refeicao">
+                        <input type="hidden" id="modal-tipo-refeicao">
                         <div class="mb-3">
                             <label for="modal-nome-alimento" class="form-label">Alimento</label>
-                            <input type="text" class="form-control" id="modal-nome-alimento" required placeholder="Ex: Arroz, Maçã, Leite...">
+                            <input type="text" class="form-control" id="modal-nome-alimento" required placeholder="Ex: Arroz">
                         </div>
-                        
                         <div class="mb-3">
                             <label for="modal-quantidade" class="form-label">Quantidade</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" id="modal-quantidade" required placeholder="Ex: 150">
+                                <input type="number" class="form-control" id="modal-quantidade" required placeholder="150">
                                 <select class="form-select" id="modal-unidade" style="max-width: 80px;">
                                     <option value="g" selected>g</option>
                                     <option value="ml">ml</option>
@@ -422,7 +430,6 @@ for ($i = 0; $i < 7; $i++) {
                                 </select>
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -433,19 +440,19 @@ for ($i = 0; $i < 7; $i++) {
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-    //FUNÇÃO DE CORREÇÃO 
+    // Metas do PHP para o JS
+    const META_DIARIA = <?php echo $meta_diaria; ?>;
+    const META_SEMANAL = <?php echo $meta_semanal; ?>;
+
     function normalizeString(str) {
-        return str.toLowerCase()
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "");
+        return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    //BANCO DE DADOS DE ALIMENTOS
     const foodDatabase = {
         'arroz': 1.3, 'feijao': 0.77, 'frango': 1.65, 'peito de frango': 1.65,
         'ovo': 1.55, 'pao': 2.65, 'banana': 0.89, 'maca': 0.52, 'whey protein': 4.0,
@@ -471,7 +478,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'creme de ricota': 2.5, 'creme de ricota light': 1.5, 'bacon': 5.4, 'biscoito de arroz': 3.8, 'biscoito integral': 4.2
     };
     
-    //VARIÁVEIS GLOBAIS
     const weekNavigator = document.querySelector('.week-navigator');
     const days = document.querySelectorAll('.day');
     const feedTitle = document.getElementById('feed-title');
@@ -483,20 +489,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTipoRefeicao = document.getElementById('modal-tipo-refeicao');
     const modalDataRefeicao = document.getElementById('modal-data-refeicao');
     const dayTotalKcalEl = document.getElementById('day-total-kcal');
+    const weekTotalKcalEl = document.getElementById('week-total-kcal');
     let dataSelecionada = '<?php echo $dataHojeStr; ?>';
 
-    //FUNÇÕES
     async function fetchRefeicoes(data) {
-        clearAllMeals(); 
+        clearAllMeals();
         try {
             const response = await fetch(`api_get_refeicoes.php?date=${data}`);
             if (!response.ok) throw new Error('Falha ao buscar dados.');
             const refeicoes = await response.json();
-            refeicoes.forEach(refeicao => renderAlimento(refeicao)); 
+            refeicoes.forEach(refeicao => renderAlimento(refeicao));
             updateTotalKcal();
+            updateWeeklyKcal(data); // ATUALIZA A SEMANA
         } catch (error) {
             console.error('Erro:', error);
             alert('Não foi possível carregar as refeições.');
+        }
+    }
+
+    // ATUALIZA A CAIXA DA SEMANA USANDO A API
+    async function updateWeeklyKcal(data) {
+        try {
+            const response = await fetch(`api_get_weekly_calories.php?date=${data}`);
+            const result = await response.json();
+            // Formata: "Consumido / Meta"
+            weekTotalKcalEl.innerHTML = `${result.total} / <span class="meta-text">${META_SEMANAL}</span>`;
+        } catch (error) {
+            console.error('Erro ao buscar kcal da semana:', error);
         }
     }
 
@@ -539,6 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             renderAlimento(novaRefeicao);
             updateTotalKcal();
+            updateWeeklyKcal(dataSelecionada); // ATUALIZA SEMANA
             addFoodForm.reset();
             addFoodModal.hide();
         } catch (error) {
@@ -561,6 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const itemParaRemover = document.querySelector(`.meal-content li[data-id="${id}"]`);
                 if (itemParaRemover) itemParaRemover.remove();
                 updateTotalKcal();
+                updateWeeklyKcal(dataSelecionada); // ATUALIZA SEMANA
             } else {
                 throw new Error(result.error || 'Erro desconhecido.');
             }
@@ -571,11 +592,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderAlimento(refeicao) {
-        // Encontra o container
         const mealContainer = document.querySelector(`.meal-item[data-meal-type="${refeicao.tipo_refeicao}"]`);
         if (!mealContainer) return;
         
-        // Encontra a <ul> DENTRO do .meal-content
         const list = mealContainer.querySelector('.meal-content ul');
         const li = document.createElement('li');
         li.setAttribute('data-id', refeicao.id);
@@ -596,14 +615,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function clearAllMeals() {
         mealItems.forEach(item => {
-
             const content = item.querySelector('.meal-content'); 
             if (content) { 
                 content.querySelector('ul').innerHTML = '';
                 content.querySelector('.meal-total-kcal').textContent = '0 kcal';
             }
         });
-        dayTotalKcalEl.textContent = '0'; // <- Contador zera
+        dayTotalKcalEl.innerHTML = `0 / <span class="meta-text">${META_DIARIA}</span>`;
     }
 
     function updateTotalKcal() {
@@ -624,10 +642,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             totalDia += totalRefeicao;
         });
-        dayTotalKcalEl.textContent = totalDia;
+        dayTotalKcalEl.innerHTML = `${totalDia} / <span class="meta-text">${META_DIARIA}</span>`;
     }
 
-    //EVENTOS 
     days.forEach(day => {
         day.addEventListener('click', () => {
             days.forEach(d => d.classList.remove('active'));

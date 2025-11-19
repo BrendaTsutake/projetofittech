@@ -6,6 +6,7 @@
     <title>Cadastro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" href="img/logo-img.png" type="image/png">
     <style>
     @font-face {
         font-family: "Louis George Cafe";
@@ -17,6 +18,15 @@
     font-family: "mousse";
     src:
     url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    }
+
+    @font-face{
+        font-family:"Arial"; 
+        src: local('Arial'), local('Helvetica');
+
+        unicode-range: U+2022;
+        font-weight: 300;
+        font-style: normal;
     }
 
         
@@ -157,6 +167,10 @@
         color: #777;
     }
 
+    .cadastro-form input[type="password"] {
+        font-family: 'Arial', 'Louis George Cafe' !important;
+    }
+
     </style>
 </head>
 <body>
@@ -184,7 +198,7 @@
             </div>
 
             <div class="col-md-6">
-                <input type="text" id="email" name="confirmar_email" placeholder="Confirme seu e-mail" required>
+                <input type="text" id="confirma-email" name="confirmar_email" placeholder="Confirme seu e-mail" required>
             </div>
 
             <div class="campo-senha col-md-6">
@@ -232,7 +246,7 @@
     const formCadastro = document.querySelector("#form-cadastro");
     const inputEmail = document.querySelector("#email");
     const inputSenha = document.querySelector("#senha");
-    const inputConfirmaSenha = document.querySelector("#confirma_senha");
+    const inputConfirmaSenha = document.querySelector("#confirma-senha");
     
     // Seletores do Olhinho
     const toggleSenha = document.querySelector("#toggleSenha");

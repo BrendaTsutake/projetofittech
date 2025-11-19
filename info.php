@@ -14,6 +14,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preenchendo informações</title>
+    <link rel="icon" href="img/logo-img.png" type="image/png">
     <style>
     @font-face {
         font-family: "Louis George Cafe";
@@ -84,10 +85,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         font-family: 'Louis George Cafe', sans-serif; 
         font-size: 18px; 
         background-color: white;
-    }
-
-    input[type="number"]{
-        font-family: 'Inter', sans-serif;
     }
         
     input::placeholder {
@@ -177,7 +174,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
     <div class="container">
         <div class="logo">
-            <img src="img/Group 70.png" alt="Logo">
+            <img src="img/logo.png" alt="Logo">
         </div>
 
         <div class="titulo">

@@ -46,7 +46,7 @@ $conn->close();
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="icon" href="img/logo-img.png" type="image/png">
     <style>
     @font-face {
         font-family: "Louis George Cafe";
@@ -299,9 +299,14 @@ $conn->close();
         <main class="profile-content">
             <header class="profile-header">
                 <div class="profile-avatar">
-                    <div class="avatar-img">
-                        <img src="<?php echo htmlspecialchars($user['profile_pic']); ?>" alt="Foto de Perfil">
-                    </div>
+                <div class="avatar-img" 
+            data-bs-toggle="modal" 
+            data-bs-target="#viewAvatarModal" 
+            style="cursor: pointer;" 
+            title="Clique para ampliar">
+    
+    <img src="<?php echo htmlspecialchars($user['profile_pic']); ?>" alt="Foto de Perfil">
+</div>
                     <div class="add-icon" data-bs-toggle="modal" data-bs-target="#changePicModal">
                         <i class="fa-solid fa-plus"></i>
                     </div>
@@ -352,16 +357,130 @@ $conn->close();
 
         <aside class="sidebar-right">
             <div class="user-tools">
-                <div class="search-bar">
+                
+                <div class="search-bar" style="position: relative;">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Buscar...">
+                    <input type="text" id="searchInput" placeholder="Buscar usuários..." autocomplete="off">
+                    
+                    <div id="searchResults" class="search-dropdown"></div>
                 </div>
+
                 <div class="tool-icons">
+                    <a href="notificacao.php" title="Notificações"><i class="fa-solid fa-bell"></i></a>
                     <a href="calendario.php" title="Calendário"><i class="fa-solid fa-calendar-days"></i></a>
-                    <a href="perfil.php" title="Perfil" class="active"><i class="fa-solid fa-user"></i></a>
+                    <a href="perfil.php" title="Perfil"><i class="fa-solid fa-user"></i></a>
                 </div>
             </div>
+            
+            <?php if(basename($_SERVER['PHP_SELF']) == 'paginicial.php' || basename($_SERVER['PHP_SELF']) == 'refeicao.php'): ?>
+            <div class="total-kcal-card" style="margin-top: 20px;">
+                <h3>Kcal Total (Dia)</h3>
+                <p id="day-total-kcal">0 / <span class="meta-text"><?php echo isset($meta_diaria) ? $meta_diaria : '0'; ?></span></p>
+            </div>
+            <?php endif; ?>
         </aside>
+
+<style>
+.search-dropdown {
+    position: absolute;
+    top: 100%; /* Logo abaixo do input */
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    margin-top: 5px;
+    display: none; /* Começa invisível */
+    overflow: hidden;
+}
+
+.search-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover {
+    background-color: #FFF9EA;
+    color: #F8694D;
+}
+
+.search-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1px solid #F8694D;
+}
+
+.search-name {
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Louis George Cafe', sans-serif;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    // Escuta o que você digita
+    searchInput.addEventListener('input', async function() {
+        const termo = this.value.trim();
+
+        if (termo.length < 2) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        try {
+            const response = await fetch(`api_search_users.php?q=${termo}`);
+            const users = await response.json();
+
+            searchResults.innerHTML = ''; // Limpa resultados anteriores
+
+            if (users.length > 0) {
+                users.forEach(user => {
+                    // Cria o link para o perfil do usuário
+                    const link = document.createElement('a');
+                    link.href = `perfil_usuario.php?id=${user.id}`;
+                    link.className = 'search-item';
+                    link.innerHTML = `
+                        <img src="${user.profile_pic}" class="search-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png'">
+                        <span class="search-name">${user.username}</span>
+                    `;
+                    searchResults.appendChild(link);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div style="padding:10px; text-align:center; color:#777;">Usuário não encontrado</div>';
+                searchResults.style.display = 'block';
+            }
+
+        } catch (error) {
+            console.error('Erro na busca:', error);
+        }
+    });
+
+    // Fecha a lista se clicar fora
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+});
+</script>
     </div>
 
     <div class="modal fade" id="editProfileModal" tabindex="-1">
@@ -459,7 +578,20 @@ $conn->close();
         </div>
     </div>
 
-
+    <div class="modal fade" id="viewAvatarModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: transparent; border: none;">
+            <div class="modal-body text-center" style="padding: 0;">
+                <img src="<?php echo htmlspecialchars($user['profile_pic']); ?>" 
+                    alt="Foto de Perfil Grande" 
+                    style="width: 100%; max-width: 500px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                
+                <br><br>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <script>

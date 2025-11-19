@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" href="img/logo-img.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
     @font-face {
         font-family: "Louis George Cafe";
@@ -14,6 +16,16 @@
     font-family: "mousse";
     src:
     url("fontes/mousse/Mousse-Regular.otf") format("otf");
+    }
+
+    @font-face {
+        font-family: "Arial"; 
+        src: local('Arial'), local('Helvetica');
+        
+        /* A mágica: só vai aplicar este bloco para o caractere de (•) */
+        unicode-range: U+2022; 
+        font-weight: 300;
+        font-style: normal;
     }
 
         
@@ -123,6 +135,19 @@
         font-size: 22px;
     }
 
+    .login-form input[type="password"] {
+        font-family: 'Arial', 'Louis George Cafe' !important;
+    }
+
+    .icone-olho {
+        cursor: pointer; 
+        position: absolute; 
+        right: 15px; 
+        /* Tenta posicionar o ícone a 22px da parte de baixo da div */
+        bottom: 22px; 
+        color: #777;
+    }
+
     </style>
 </head>
 <body>
@@ -141,9 +166,11 @@
                     <label for="username">Usuário</label>
                     <input type="text" id="username" name="username" placeholder="username ou e-mail" required>
                 </div>
-                <div class="label" style="margin-top: 10px;">
+                <div class="label" style="margin-top: 10px; position: relative;">
                     <label for="password">Senha</label>
                     <input type="password" id="senha" name="senha" placeholder="senha" required>
+                    
+                    <i class="fa-solid fa-eye icone-olho" id="toggleSenha"></i>
                 </div>
                 <div class="botao">
                     <button type="submit">Entrar</button>
@@ -158,4 +185,38 @@
         </div>
     </div>
 </body>
+<script>
+    // --- SELETORES DE ELEMENTOS ---
+    // Seleciona os elementos corretos DESTA página
+    const inputSenha = document.querySelector("#senha");
+    const toggleSenha = document.querySelector("#toggleSenha");
+
+    // Função para alternar a visibilidade
+    function alternarVisibilidade(input, icon) {
+        // Verifica se o input foi encontrado antes de tentar usá-lo
+        if (!input || !icon) {
+            console.error("Erro: O input ou o ícone da senha não foi encontrado.");
+            return;
+        }
+        
+        const type = input.getAttribute("type") === "password" ? "text" : "password";
+        input.setAttribute("type", type);
+        
+        // Muda o ícone (olho aberto / olho fechado)
+        if (type === "password") {
+            icon.classList.remove("fa-eye-slash"); // Remove ícone cortado
+            icon.classList.add("fa-eye");       // Adiciona ícone aberto
+        } else {
+            icon.classList.remove("fa-eye");       // Remove ícone aberto
+            icon.classList.add("fa-eye-slash"); // Adiciona ícone cortado
+        }
+    }
+
+    // Adiciona o evento de clique ao olho
+    toggleSenha.addEventListener("click", function() {
+        alternarVisibilidade(inputSenha, toggleSenha);
+    });
+
+    // A função para 'confirmar senha' foi removida pois não existe nesta página.
+</script>
 </html>
