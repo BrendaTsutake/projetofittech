@@ -254,7 +254,7 @@ $conn->close();
     <div class="container">
         <nav class="sidebar-left">
             <div class="logo">
-                <img src="img/Group 70.png" alt="FitTech Logo">
+                <img src="img/logo.png" alt="FitTech Logo">
             </div>
             <ul>
                 <li><a href="paginicial.php"><i class="fa-solid fa-house"></i> <span>Página Inicial</span></a></li>
@@ -319,7 +319,6 @@ $conn->close();
                     <input type="text" placeholder="Buscar...">
                 </div>
                 <div class="tool-icons">
-                    <a href="notificacao.php"><i class="fa-solid fa-bell"></i></a>
                     <a href="calendario.php"><i class="fa-solid fa-calendar-days"></i></a>
                     <a href="perfil.php"><i class="fa-solid fa-user"></i></a>
                 </div>
