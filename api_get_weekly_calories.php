@@ -1,47 +1,53 @@
 <?php
 session_start();
-// Proteção de login
+header('Content-Type: application/json');
+
+// Se não estiver logado, retorna 0
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     echo json_encode(['total' => 0]);
     exit;
 }
 
+// Conexão
 $conn = new mysqli("localhost", "root", "", "mydb");
-if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
+if ($conn->connect_error) { 
+    echo json_encode(['total' => 0]); 
+    exit; 
+}
 
 $id_usuario = $_SESSION['id'];
-$data_ref = $_GET['date']; // A data que o usuário selecionou no calendário
+$data_input = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 
-// 1. Lógica para descobrir o início (Domingo) e fim (Sábado) da semana dessa data
-$dateObj = new DateTime($data_ref);
-$dia_da_semana = $dateObj->format('w'); // 0 (Domingo) a 6 (Sábado)
+// --- LÓGICA DA SEMANA (Domingo a Sábado) ---
+$dt = new DateTime($data_input);
+$dia_semana = $dt->format('w'); // 0 (Domingo) a 6 (Sábado)
 
-// Volta X dias para chegar no Domingo anterior
-$inicio_semana = clone $dateObj;
-$inicio_semana->modify("-$dia_da_semana days");
+// Volta X dias para achar o Domingo (Início)
+$inicio = clone $dt;
+$inicio->modify("-$dia_semana days");
 
-// Avança para chegar no Sábado
-$fim_semana = clone $inicio_semana;
-$fim_semana->modify("+6 days");
+// Avança para achar o Sábado (Fim)
+$fim = clone $inicio;
+$fim->modify("+6 days");
 
-$start_str = $inicio_semana->format('Y-m-d');
-$end_str = $fim_semana->format('Y-m-d');
+$data_inicio = $inicio->format('Y-m-d');
+$data_fim = $fim->format('Y-m-d');
 
-// 2. Soma as calorias de TUDO que está entre essas datas
-$sql = "SELECT SUM(kcal) as total_semanal 
+// Soma as calorias nesse intervalo
+$sql = "SELECT SUM(kcal) as total 
         FROM refeicoes 
-        WHERE id_usuario = ? AND data_refeicao BETWEEN ? AND ?";
+        WHERE id_usuario = ? 
+        AND data_refeicao BETWEEN ? AND ?";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("iss", $id_usuario, $start_str, $end_str);
+$stmt->bind_param("iss", $id_usuario, $data_inicio, $data_fim);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
-// Se não tiver refeições, retorna 0, senão retorna a soma
-$total = $row['total_semanal'] ? $row['total_semanal'] : 0;
+// Se o resultado for nulo (nenhuma refeição), assume 0
+$total = $row['total'] !== null ? (int)$row['total'] : 0;
 
-header('Content-Type: application/json');
 echo json_encode(['total' => $total]);
 
 $stmt->close();

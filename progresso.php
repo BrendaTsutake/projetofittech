@@ -255,7 +255,6 @@ $data_hoje = strftime('%d de %B de %Y');
                 </div>
 
                 <div class="tool-icons">
-                    <a href="notificacao.php" title="Notificações"><i class="fa-solid fa-bell"></i></a>
                     <a href="calendario.php" title="Calendário"><i class="fa-solid fa-calendar-days"></i></a>
                     <a href="perfil.php" title="Perfil"><i class="fa-solid fa-user"></i></a>
                 </div>
