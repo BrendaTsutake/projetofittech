@@ -1,8 +1,5 @@
 <?php
-// Inicia a sessão
 session_start();
-
-// Verifica se o usuário NÃO está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
@@ -117,7 +114,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         font-weight: bold;
         color: #FFF9EA; /* Garante que o H5 mude de cor também */
     }
-    /* O H5 do botão não selecionado precisa ser escuro */
     .option-btn:not(.selecionado) h5 {
         color: #333;
     }

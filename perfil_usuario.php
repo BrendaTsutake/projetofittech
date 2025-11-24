@@ -1,12 +1,9 @@
 <?php
-// 1. Inicia a sessão
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
-
-// 2. Verifica se tem ID na URL
 if (!isset($_GET['id'])) {
     header("Location: paginicial.php");
     exit;
@@ -15,18 +12,15 @@ if (!isset($_GET['id'])) {
 $id_perfil = intval($_GET['id']);
 $id_logado = $_SESSION['id'];
 
-// 3. Se o ID for o meu mesmo, vá para o meu perfil editável
 if ($id_perfil === $id_logado) {
     header("Location: perfil.php");
     exit;
 }
 
-// 4. Conecta ao banco
 $servername = "localhost"; $username_db = "root"; $password_db = ""; $dbname = "mydb";
 $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 if ($conn->connect_error) { die("Falha na conexão: " . $conn->connect_error); }
 
-// 5. Busca dados do USUÁRIO VISITADO
 $sql_user = "SELECT username, COALESCE(bio, '') as bio, profile_pic FROM usuarios WHERE id = ?";
 $stmt_user = $conn->prepare($sql_user);
 $stmt_user->bind_param("i", $id_perfil);
@@ -34,13 +28,11 @@ $stmt_user->execute();
 $result_user = $stmt_user->get_result();
 $user = $result_user->fetch_assoc();
 
-// Se usuário não existe
 if (!$user) {
     echo "Usuário não encontrado.";
     exit;
 }
 
-// 6. Busca os POSTS desse usuário
 $sql_posts = "SELECT imagem_path, caption FROM postagens WHERE id_usuario = ? ORDER BY data_postagem DESC";
 $stmt_posts = $conn->prepare($sql_posts);
 $stmt_posts->bind_param("i", $id_perfil);
@@ -67,46 +59,193 @@ $conn->close();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-    @font-face { font-family: "Louis George Cafe"; src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype"); }
-    @font-face { font-family: "mousse"; src: url("fontes/mousse/Mousse-Regular.otf") format("otf"); }
-    body { font-family: 'Louis George Cafe', Arial, sans-serif; font-weight: 500; font-size: 20px; background-color: #FFF9EA; margin: 0; min-height: 100vh; }
-    .container { display: grid; grid-template-columns: 250px 1fr 300px; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 20px; }
-    .sidebar-left { position: sticky; top: 20px; height: 95vh; }
-    .sidebar-left .logo img { width: 150px; margin-bottom: 30px; }
-    .sidebar-left ul { list-style: none; padding: 0; }
-    .sidebar-left ul li a { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #555; font-size: 18px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; }
-    .sidebar-left ul li a i { margin-right: 15px; width: 20px; }
-    .sidebar-left ul li a:hover, .sidebar-left ul li a.active { background-color: #F8694D; color: white; }
-    .sidebar-right { position: sticky; top: 20px; }
-    .user-tools { background-color: #C8E6C9; padding: 15px; border-radius: 12px; width: 400px; }
-    .search-bar { display: flex; align-items: center; background-color: white; padding: 8px; border-radius: 20px; margin-bottom: 20px; }
-    .search-bar input { border: none; outline: none; background: none; width: 100%; margin-left: 8px; }
-    .tool-icons { display: flex; justify-content: space-around; }
-    .tool-icons a { font-size: 22px; color: #333; }
-    .tool-icons a:hover { color: #F8694D; }
+    @font-face { 
+        font-family: "Louis George Cafe"; 
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype"); 
+    }
+    @font-face { 
+        font-family: "mousse"; 
+        src: url("fontes/mousse/Mousse-Regular.otf") format("otf"); 
+    }
+    body { 
+        font-family: 'Louis George Cafe', Arial, sans-serif; 
+        font-weight: 500; 
+        font-size: 20px; 
+        background-color: #FFF9EA; 
+        margin: 0; min-height: 100vh; 
+    }
+    .container { 
+        display: grid; 
+        grid-template-columns: 250px 1fr 300px; 
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto; 
+        padding: 20px; 
+    }
+    .sidebar-left { 
+        position: sticky; 
+        top: 20px; 
+        height: 95vh; 
+    }
+    .sidebar-left .logo img { 
+        width: 150px; 
+        margin-bottom: 30px; 
+    }
+    .sidebar-left ul { 
+        list-style: none; 
+        padding: 0; 
+    }
+    .sidebar-left ul li a { 
+        display: flex; 
+        align-items: center; 
+        padding: 15px; 
+        text-decoration: none; 
+        color: #555; 
+        font-size: 18px; 
+        border-radius: 8px; 
+        margin-bottom: 10px; 
+        font-weight: bold; 
+    }
+    .sidebar-left ul li a i { 
+        margin-right: 15px; 
+        width: 20px; 
+    }
+    .sidebar-left ul li a:hover, .sidebar-left ul li a.active { 
+        background-color: #F8694D; 
+        color: white; 
+    }
+    .sidebar-right { 
+        position: sticky; 
+        top: 20px; 
+    }
+    .user-tools { 
+        background-color: #C8E6C9; 
+        padding: 15px; 
+        border-radius: 12px; 
+        width: 400px; 
+    }
+    .search-bar { 
+        display: flex; 
+        align-items: center; 
+        background-color: white; 
+        padding: 8px; 
+        border-radius: 20px; 
+        margin-bottom: 20px; 
+    }
+    .search-bar input { 
+        border: none; 
+        outline: none; 
+        background: none; 
+        width: 100%; 
+        margin-left: 8px; 
+    }
+    .tool-icons { 
+        display: flex; 
+        justify-content: space-around; 
+    }
+    .tool-icons a { 
+        font-size: 22px; 
+        color: #333; 
+    }
+    .tool-icons a:hover { 
+        color: #F8694D; 
+    }
     
-    .profile-content { padding: 10px; }
-    .profile-header { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e0e0e0; }
-    .profile-avatar { position: relative; flex-shrink: 0; }
-    .avatar-img { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #C8E6C9; display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; overflow: hidden; }
+    .profile-content { 
+        padding: 10px; 
+    }
+    .profile-header { 
+        display: flex; 
+        align-items: center; 
+        gap: 30px; 
+        margin-bottom: 30px; 
+        padding-bottom: 30px; 
+        border-bottom: 1px solid #e0e0e0; 
+    }
+    .profile-avatar { 
+        position: relative; 
+        flex-shrink: 0; 
+    }
+    .avatar-img { 
+        width: 150px; 
+        height: 150px; 
+        border-radius: 50%; 
+        border: 4px solid #C8E6C9; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        background-color: #f0f0f0; 
+        overflow: hidden; 
+    }
     
-    /* Ajuste da imagem para preencher o círculo */
-    .avatar-img img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-img img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+    }
     
-    .profile-info .username { font-size: 28px; font-weight: bold; margin: 0; }
-    .profile-info .stats { font-size: 18px; margin: 5px 0 15px 0; color: #555; }
-    .profile-info .bio { font-family: 'Louis George Cafe', sans-serif; font-size: 15px; color: #777; line-height: 1.6; }
+    .profile-info .username { 
+        font-size: 28px; 
+        font-weight: bold; 
+        margin: 0; 
+    }
+    .profile-info .stats { 
+        font-size: 18px; 
+        margin: 5px 0 15px 0; 
+        color: #555; 
+    }
+    .profile-info .bio { 
+        font-family: 'Louis George Cafe', sans-serif; 
+        font-size: 15px; 
+        color: #777; 
+        line-height: 1.6; 
+    }
     
-    .btn-back { background-color: #e0e0e0; border: none; padding: 8px 20px; border-radius: 10px; font-weight: bold; color: #333; cursor: pointer; margin-top: 15px; }
-    .btn-back:hover { background-color: #d0d0d0; }
+    .btn-back { 
+        background-color: #e0e0e0; 
+        border: none; 
+        padding: 8px 20px; 
+        border-radius: 10px; 
+        font-weight: bold; 
+        color: #333; 
+        cursor: pointer; 
+        margin-top: 15px; 
+    }
+    .btn-back:hover { 
+        background-color: #d0d0d0; 
+    }
 
-    .diet-gallery-header { margin-bottom: 20px; }
-    .diet-gallery h2 { font-size: 24px; font-weight: bold; color: #333; margin: 0; }
+    .diet-gallery-header { 
+        margin-bottom: 20px; 
+    }
+    .diet-gallery h2 { 
+        font-size: 24px; 
+        font-weight: bold; 
+        color: #333; 
+        margin: 0; 
+    }
     
-    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .photo-item { aspect-ratio: 1 / 1; background-color: #e0e0e0; border-radius: 12px; overflow: hidden; cursor: pointer; }
-    .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
-    .photo-item:hover img { transform: scale(1.05); }
+    .photo-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+        gap: 15px; 
+    }
+    .photo-item { 
+        aspect-ratio: 1 / 1; 
+        background-color: #e0e0e0; 
+        border-radius: 12px; 
+        overflow: hidden; 
+        cursor: pointer; 
+    }
+    .photo-item img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        transition: transform 0.3s ease; 
+    }
+    .photo-item:hover img { 
+        transform: scale(1.05); 
+    }
     </style>
     
 </head>
@@ -156,10 +295,10 @@ $conn->close();
                     
                     <?php foreach ($postagens as $post): ?>
                     <div class="photo-item" 
-                         data-bs-toggle="modal" 
-                         data-bs-target="#viewPostModal"
-                         data-img-src="<?php echo htmlspecialchars($post['imagem_path']); ?>"
-                         data-caption="<?php echo htmlspecialchars($post['caption']); ?>">
+                        data-bs-toggle="modal" 
+                        data-bs-target="#viewPostModal"
+                        data-img-src="<?php echo htmlspecialchars($post['imagem_path']); ?>"
+                        data-caption="<?php echo htmlspecialchars($post['caption']); ?>">
                         
                         <img src="<?php echo htmlspecialchars($post['imagem_path']); ?>" alt="<?php echo htmlspecialchars($post['caption']); ?>">
                     </div>

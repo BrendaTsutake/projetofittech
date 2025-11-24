@@ -18,12 +18,11 @@ $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-$objetivo_usuario = $user['objetivo'] ?? 'Manter peso'; // Padrão se não tiver
+$objetivo_usuario = $user['objetivo'] ?? 'Manter peso';
 
 $conn->close();
 
 //BANCO DE DADOS DE DICAS (Array PHP)
-//Aqui definimos as dicas para cada tipo de meta.
 $todas_dicas = [
     'Perder peso' => [
         ['semana' => 1, 'cor' => 'green', 'nutri' => 'Nutricionista Ana', 'texto' => 'Comece bebendo pelo menos 2 litros de água por dia. A hidratação ajuda a controlar a fome e acelera o metabolismo.'],

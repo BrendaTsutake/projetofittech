@@ -9,8 +9,6 @@ if (!isset($_GET['id_post'])) {
 
 $id_post = intval($_GET['id_post']);
 $conn = new mysqli("localhost", "root", "", "mydb");
-
-// MUDANÇA: Agora buscamos c.id e c.id_usuario também
 $sql = "SELECT c.id, c.id_usuario, c.texto, u.username 
         FROM comentarios c 
         JOIN usuarios u ON c.id_usuario = u.id 

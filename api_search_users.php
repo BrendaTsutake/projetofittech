@@ -9,7 +9,6 @@ $termo = isset($_GET['q']) ? $_GET['q'] : '';
 $id_logado = $_SESSION['id'];
 
 if (strlen($termo) > 0) {
-    // Busca usuários parecidos (LIKE), exceto eu mesmo
     $sql = "SELECT id, username, profile_pic FROM usuarios 
             WHERE username LIKE ? AND id != ? LIMIT 5";
     

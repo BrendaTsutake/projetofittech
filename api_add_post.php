@@ -7,7 +7,7 @@ $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 
 $id_usuario = $_SESSION['id'];
 $caption = $_POST['caption'];
-$uploadDir = 'uploads/posts/'; // Pasta que criamos
+$uploadDir = 'uploads/posts/';
 $fileName = basename($_FILES["postFile"]["name"]);
 $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 

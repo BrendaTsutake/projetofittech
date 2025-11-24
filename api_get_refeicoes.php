@@ -24,7 +24,7 @@ if ($conn->connect_error) {
 $id_usuario = $_SESSION['id'];
 $data = $_GET['date']; 
 
-// Prepara e executa a busca (SQL ATUALIZADO)
+// Prepara e executa a busca
 $sql = "SELECT id, tipo_refeicao, nome_alimento, quantidade, unidade, kcal 
         FROM refeicoes 
         WHERE id_usuario = ? AND data_refeicao = ?";

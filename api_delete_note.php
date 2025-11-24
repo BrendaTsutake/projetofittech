@@ -9,7 +9,7 @@ if (!isset($_SESSION['loggedin'])) {
 // 2. Recebe os dados
 $data = json_decode(file_get_contents('php://input'), true);
 $id_usuario = $_SESSION['id'];
-$data_nota = $data['data']; // A data para apagar
+$data_nota = $data['data']; 
 
 // 3. Conecta e Apaga
 $conn = new mysqli("localhost", "root", "", "mydb");

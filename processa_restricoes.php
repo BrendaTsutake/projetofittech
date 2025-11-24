@@ -1,17 +1,10 @@
 <?php
-// Iniciar a sessão
 session_start();
-
-// Verificar se o usuário está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
-
-// Verificar se o formulário foi enviado 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // Obter os dados e combinar
     $id_usuario = $_SESSION['id']; 
     
     // Pega os checkboxes
@@ -58,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Executar e Redirecionar
     if ($stmt->execute()) {
-        // Sucesso! Redireciona para a página principal do app
         header("Location: exercicio.php");
         exit;
     } else {
@@ -69,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 
 } else {
-    // Se alguém tentar acessar esse arquivo direto, manda de volta
     header("Location: restricoes.php");
     exit;
 }

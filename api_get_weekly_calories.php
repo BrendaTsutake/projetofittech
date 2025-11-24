@@ -2,7 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Se não estiver logado, retorna 0
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     echo json_encode(['total' => 0]);
     exit;

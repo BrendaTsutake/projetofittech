@@ -6,7 +6,7 @@ $servername = "localhost"; $username_db = "root"; $password_db = ""; $dbname = "
 $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 
 $id_usuario = $_SESSION['id'];
-$uploadDir = 'uploads/avatars/'; // Pasta que criamos
+$uploadDir = 'uploads/avatars/';
 $fileName = basename($_FILES["avatarFile"]["name"]);
 $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 

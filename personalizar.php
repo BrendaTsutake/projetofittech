@@ -1,10 +1,6 @@
 <?php
-// Inicia a sessão
 session_start();
-
-// Verifica se o usuário NÃO está logado
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    // Se não estiver logado, expulsa ele de volta para o login
     header("Location: login.html");
     exit;
 }
@@ -158,7 +154,6 @@ $nome_usuario = htmlspecialchars($_SESSION['nome']);
     </form> </body>
 
 <script>
-    // Seu script de selecionar/deselecionar
     const todosOsBotoes = document.querySelectorAll('.option-btn');
     todosOsBotoes.forEach(function(botao) {
         botao.addEventListener('click', function() {
@@ -166,32 +161,17 @@ $nome_usuario = htmlspecialchars($_SESSION['nome']);
         });
     });
 
-    // O JavaScript que salva os dados
     document.getElementById('metasForm').addEventListener('submit', function(event) {
-        
-        // Encontra os botões selecionados
         const botoesSelecionados = document.querySelectorAll('.option-btn.selecionado');
         const valoresSelecionados = [];
-        
-        // Pega o "data-value" de cada um
         botoesSelecionados.forEach(function(botao) {
             valoresSelecionados.push(botao.dataset.value);
         });
 
-        // Verifica se pelo menos um foi selecionado
         if (valoresSelecionados.length > 0) {
-            
-            // Se sim, junta os valores
             const valoresString = valoresSelecionados.join(',');
-            
-            // Coloca essa string no campo invisível
             document.getElementById('metas_selecionadas_hidden').value = valoresString;
-            
-            // 6. Permite o envio do formulário
-
-
         } else {
-            // 7. Se não selecionou nada, impede o envio e avisa
             event.preventDefault(); 
             alert('Por favor, selecione ao menos uma opção.');
         }

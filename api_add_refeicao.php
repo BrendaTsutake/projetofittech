@@ -1,6 +1,5 @@
 <?php
 // --- BLOCO DE SEGURANÇA ---
-// Desativa a exibição de erros na tela (eles quebram o JSON)
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -29,7 +28,7 @@ try {
     $quantidade = floatval($data['quantidade']);
     $kcal = intval($data['kcal']);
     
-    // Define unidade padrão se não vier
+    // Define unidade padrão
     $unidade = (isset($data['unidade']) && !empty($data['unidade'])) ? $data['unidade'] : 'unid';
 
     // 4. Conexão
@@ -60,7 +59,6 @@ try {
     $conn->close();
 
 } catch (Exception $e) {
-    // Se der qualquer erro, devolve um JSON limpo com a mensagem
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 ?>

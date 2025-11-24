@@ -1,12 +1,10 @@
 <?php
-// Inicia a sessão e verifica o login
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
 
-// Conecta ao banco
 $servername = "localhost";
 $username_db = "root";
 $password_db = "";
@@ -17,7 +15,6 @@ if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
 
-// Busca os dados
 $id_usuario = $_SESSION['id'];
 $sql = "SELECT nome, peso_atual, peso_inicial, objetivo FROM usuarios WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -271,7 +268,7 @@ $data_hoje = strftime('%d de %B de %Y');
 <style>
 .search-dropdown {
     position: absolute;
-    top: 100%; /* Logo abaixo do input */
+    top: 100%;
     left: 0;
     width: 100%;
     background-color: white;
@@ -279,7 +276,7 @@ $data_hoje = strftime('%d de %B de %Y');
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     z-index: 1000;
     margin-top: 5px;
-    display: none; /* Começa invisível */
+    display: none;
     overflow: hidden;
 }
 
@@ -323,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
 
-    // Escuta o que você digita
     searchInput.addEventListener('input', async function() {
         const termo = this.value.trim();
 

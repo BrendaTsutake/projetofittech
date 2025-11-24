@@ -4,7 +4,7 @@ if (!isset($_SESSION['loggedin'])) { exit; }
 
 $data = json_decode(file_get_contents('php://input'), true);
 $id_usuario = $_SESSION['id'];
-$data_nota = $data['data']; // Formato YYYY-MM-DD
+$data_nota = $data['data'];
 $texto = $data['texto'];
 
 $conn = new mysqli("localhost", "root", "", "mydb");

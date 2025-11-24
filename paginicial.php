@@ -10,8 +10,6 @@ $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 if ($conn->connect_error) { die("Falha na conexão: " . $conn->connect_error); }
 
 $id_usuario = $_SESSION['id'];
-
-// Busca Feed Global
 $sql_feed = "SELECT 
                 p.id as post_id,
                 p.imagem_path, 
@@ -20,9 +18,9 @@ $sql_feed = "SELECT
                 u.id as user_id,
                 u.username, 
                 u.profile_pic 
-             FROM postagens p
-             JOIN usuarios u ON p.id_usuario = u.id
-             ORDER BY p.data_postagem DESC";
+            FROM postagens p
+            JOIN usuarios u ON p.id_usuario = u.id
+            ORDER BY p.data_postagem DESC";
 
 $result_feed = $conn->query($sql_feed);
 $feed_posts = [];
@@ -122,7 +120,6 @@ $conn->close();
         padding: 15px; 
     }
     
-    /* Avatar com borda */
     .user-avatar { 
         width: 40px; 
         height: 40px; 
@@ -347,7 +344,7 @@ $conn->close();
 <style>
 .search-dropdown {
     position: absolute;
-    top: 100%; /* Logo abaixo do input */
+    top: 100%;
     left: 0;
     width: 100%;
     background-color: white;
@@ -355,7 +352,7 @@ $conn->close();
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     z-index: 1000;
     margin-top: 5px;
-    display: none; /* Começa invisível */
+    display: none;
     overflow: hidden;
 }
 
@@ -412,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`api_search_users.php?q=${termo}`);
             const users = await response.json();
 
-            searchResults.innerHTML = ''; // Limpa resultados anteriores
+            searchResults.innerHTML = '';
 
             if (users.length > 0) {
                 users.forEach(user => {

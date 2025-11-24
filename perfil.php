@@ -1,19 +1,18 @@
 <?php
-// 1. Inicia a sessão e verifica o login
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
 
-// 2. Conecta ao banco
+
 $servername = "localhost"; $username_db = "root"; $password_db = ""; $dbname = "mydb";
 $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 if ($conn->connect_error) { die("Falha na conexão: " . $conn->connect_error); }
 
 $id_usuario = $_SESSION['id'];
 
-// 3. Busca os dados do USUÁRIO (perfil)
+
 $sql_user = "SELECT username, COALESCE(bio, '') as bio, profile_pic FROM usuarios WHERE id = ?";
 $stmt_user = $conn->prepare($sql_user);
 $stmt_user->bind_param("i", $id_usuario);
@@ -21,7 +20,7 @@ $stmt_user->execute();
 $result_user = $stmt_user->get_result();
 $user = $result_user->fetch_assoc();
 
-// 4. Busca os POSTS do feed 
+
 $sql_posts = "SELECT id, imagem_path, caption FROM postagens WHERE id_usuario = ? ORDER BY data_postagem DESC";
 $stmt_posts = $conn->prepare($sql_posts);
 $stmt_posts->bind_param("i", $id_usuario);
@@ -171,7 +170,6 @@ $conn->close();
         color: #aaa;
         overflow: hidden;
     }
-    /*imagem de perfil */
     .avatar-img img {
         width: 100%;
         height: 100%;
@@ -229,7 +227,6 @@ $conn->close();
     .profile-actions .btn-custom:hover {
         background-color: #C8E6C9;
     }
-    /*Header da galeria para o botão de adicionar */
     .diet-gallery-header {
         display: flex;
         justify-content: space-between;
@@ -382,7 +379,7 @@ $conn->close();
 <style>
 .search-dropdown {
     position: absolute;
-    top: 100%; /* Logo abaixo do input */
+    top: 100%;
     left: 0;
     width: 100%;
     background-color: white;
@@ -390,7 +387,7 @@ $conn->close();
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     z-index: 1000;
     margin-top: 5px;
-    display: none; /* Começa invisível */
+    display: none; 
     overflow: hidden;
 }
 
@@ -434,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
 
-    // Escuta o que você digita
     searchInput.addEventListener('input', async function() {
         const termo = this.value.trim();
 
@@ -545,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <label for="postFile" class="form-label">Selecione a imagem:</label>
                             <input type="file" class="form-control" name="postFile" id="postFile" required>
                         </div>
-                         <div class="mb-3">
+                        <div class="mb-3">
                             <label for="caption" class="form-label">Legenda (opcional):</label>
                             <textarea class="form-control" name="caption" rows="2" placeholder="Ex: Meu almoço de hoje!"></textarea>
                         </div>
@@ -597,19 +593,15 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     var viewPostModal = document.getElementById('viewPostModal');
     var deleteButton = document.getElementById('deletePostButton');
-    var currentPostId = null; // Variável para guardar o ID do post que está aberto
+    var currentPostId = null; 
 
-    // 1. Evento que abre o Modal (quando você clica em uma foto)
+
     viewPostModal.addEventListener('show.bs.modal', function(event) {
-        // Pega o item que foi clicado
         var item = event.relatedTarget; 
-        
-        // Pega os dados que colocamos no HTML
         currentPostId = item.dataset.id; // Salva o ID do post
         var imgSrc = item.dataset.imgSrc;
         var caption = item.dataset.caption;
 
-        // Coloca os dados dentro do modal
         var modalImage = viewPostModal.querySelector('#modal-post-image');
         var modalCaption = viewPostModal.querySelector('#modal-post-caption');
         
@@ -622,9 +614,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 2. Evento de clique no botão "Excluir Post"
+    // "Excluir Post"
     deleteButton.addEventListener('click', async function() {
-        if (!currentPostId) return; // Não faz nada se não tiver um ID
+        if (!currentPostId) return;
         
         // Confirmação
         if (!confirm('Tem certeza que deseja excluir este post permanentemente?')) {

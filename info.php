@@ -241,19 +241,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
         let generoSelecionado = "";
 
-        // Adiciona clique nas imagens de gênero
         genderOptions.forEach(option => {
             option.addEventListener('click', () => {
-                // Remove a classe 'selected' de todos
                 genderOptions.forEach(opt => opt.classList.remove('selected'));
-                
-                // Adiciona a classe 'selected' apenas no clicado
                 option.classList.add('selected');
-                
-                // Desmarca o "Prefiro não dizer"
                 naoDizerCheckbox.checked = false;
-                
-                // Define o valor
                 generoSelecionado = option.dataset.value;
             });
         });

@@ -22,7 +22,6 @@
         font-family: "Arial"; 
         src: local('Arial'), local('Helvetica');
         
-        /* A mágica: só vai aplicar este bloco para o caractere de (•) */
         unicode-range: U+2022; 
         font-weight: 300;
         font-style: normal;
@@ -143,7 +142,6 @@
         cursor: pointer; 
         position: absolute; 
         right: 15px; 
-        /* Tenta posicionar o ícone a 22px da parte de baixo da div */
         bottom: 22px; 
         color: #777;
     }
@@ -187,13 +185,11 @@
 </body>
 <script>
     // --- SELETORES DE ELEMENTOS ---
-    // Seleciona os elementos corretos DESTA página
     const inputSenha = document.querySelector("#senha");
     const toggleSenha = document.querySelector("#toggleSenha");
 
     // Função para alternar a visibilidade
     function alternarVisibilidade(input, icon) {
-        // Verifica se o input foi encontrado antes de tentar usá-lo
         if (!input || !icon) {
             console.error("Erro: O input ou o ícone da senha não foi encontrado.");
             return;

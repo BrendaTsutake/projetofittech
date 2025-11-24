@@ -1,17 +1,10 @@
 <?php
-// Inicia a sessão
 session_start();
-
-// Verifica se o usuário está logado
-// Se 'loggedin' não existir ou for falso, redireciona para o login
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
-
-// Se o script chegou até aqui, o usuário está logado!
-// Podemos usar os dados da sessão, como o nome.
-$nome_usuario = htmlspecialchars($_SESSION['nome']); // htmlspecialchars por segurança
+$nome_usuario = htmlspecialchars($_SESSION['nome']);
 ?>
 
 <!DOCTYPE html>

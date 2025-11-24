@@ -1,13 +1,11 @@
 <?php
 session_start();
-header('Content-Type: application/json'); // Garante que a resposta é JSON
+header('Content-Type: application/json'); 
 
 if (!isset($_SESSION['loggedin'])) { 
     echo json_encode(['success' => false, 'error' => 'Não logado']);
     exit; 
 }
-
-// Recebe o JSON do Javascript
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!isset($data['id_post']) || !isset($data['texto'])) {
@@ -16,7 +14,7 @@ if (!isset($data['id_post']) || !isset($data['texto'])) {
 }
 
 $id_usuario = $_SESSION['id'];
-$id_post = intval($data['id_post']); // Garante que é número
+$id_post = intval($data['id_post']);
 $texto = trim($data['texto']);
 
 if (empty($texto)) {

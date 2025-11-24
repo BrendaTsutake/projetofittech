@@ -1,5 +1,5 @@
 <?php
-// 1. Inicia a sessão e configura fuso horário
+// Inicia a sessão e configura fuso horário
 date_default_timezone_set('America/Sao_Paulo');
 session_start();
 
@@ -7,15 +7,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.html");
     exit;
 }
-
-// 2. Conecta ao banco
 $servername = "localhost"; $username_db = "root"; $password_db = ""; $dbname = "mydb";
 $conn = new mysqli($servername, $username_db, $password_db, $dbname);
 if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
 $id_usuario = $_SESSION['id'];
 
-// 3. Busca dados para cálculo
+// Busca dados para cálculo
 $sql_user = "SELECT peso_atual, altura, idade, genero, frequencia_exercicio, objetivo FROM usuarios WHERE id = ?";
 $stmt = $conn->prepare($sql_user);
 $stmt->bind_param("i", $id_usuario);
@@ -23,7 +21,7 @@ $stmt->execute();
 $result_user = $stmt->get_result();
 $user = $result_user->fetch_assoc();
 
-// 4. Cálculos de Meta
+// Cálculos de Meta
 $peso   = ($user['peso_atual'] > 0) ? $user['peso_atual'] : 70; 
 $altura = ($user['altura'] > 0) ? $user['altura'] : 170;
 $idade  = ($user['idade'] > 0) ? $user['idade'] : 30;
@@ -80,53 +78,266 @@ for ($i = 0; $i < 7; $i++) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="icon" href="img/logo-img.png" type="image/png">
     <style>
-    @font-face { font-family: "Louis George Cafe"; src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype"); }
-    @font-face { font-family: "mousse"; src: url("fontes/mousse/Mousse-Regular.otf") format("otf"); }
-    body { font-family: 'Louis George Cafe', Arial, sans-serif; font-weight: 500; font-size: 22px; background-color: #FFF9EA; margin: 0; min-height: 100vh; }
-    .container { display: grid; grid-template-columns: 250px 1fr 300px; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 20px; }
-    .sidebar-left { position: sticky; top: 20px; height: 95vh; }
-    .sidebar-left .logo img { width: 150px; margin-bottom: 30px; }
-    .sidebar-left ul { list-style: none; padding: 0; }
-    .sidebar-left ul li a { display: flex; align-items: center; padding: 15px; text-decoration: none; color: #555; font-size: 18px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; }
-    .sidebar-left ul li a i { margin-right: 15px; width: 20px; }
-    .sidebar-left ul li a:hover, .sidebar-left ul li a.active { background-color: #F8694D; color: white; }
-    .sidebar-right { position: sticky; top: 20px; }
-    .user-tools { background-color: #C8E6C9; padding: 15px; border-radius: 12px; width: 400px; margin-bottom: 20px; }
-    .search-bar { display: flex; align-items: center; background-color: white; padding: 8px; border-radius: 20px; margin-bottom: 20px; }
-    .search-bar input { border: none; outline: none; background: none; width: 100%; margin-left: 8px; }
-    .tool-icons { display: flex; justify-content: space-around; }
-    .tool-icons a { font-size: 22px; color: #333; }
-    .feed-content { padding: 10px; }
-    .feed-header { text-align: center; margin-bottom: 30px; font-weight: bold; color: #555; font-size: 40px; text-transform: capitalize; }
-    .week-navigator { display: flex; justify-content: space-around; align-items: center; margin-bottom: 40px; }
-    .day { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-    .day-circle { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ccc; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; transition: all 0.2s; font-weight: bold; }
-    .day span { font-size: 18px; text-transform: uppercase; font-weight: bold; color: #888; }
-    .day.active .day-circle { border-color: #F8694D; background-color: #F8694D; color: white; }
-    .day.active span { color: #F8694D; }
-    .meal-item { background-color: #E8F5E9; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .meal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px; cursor: pointer; transition: transform 0.2s; }
-    .meal-header:hover { transform: translateY(-3px); }
-    .meal-info { display: flex; align-items: center; gap: 15px; }
-    .meal-info i { font-size: 26px; color: #555; }
-    .meal-info .meal-name { font-size: 20px; font-weight: bold; color: #333; }
-    .meal-header > i.fa-plus { font-size: 22px; color: #555; cursor: pointer; z-index: 10; }
-    .meal-content { padding: 0 20px 20px 20px; display: none; }
-    .meal-content ul { list-style: none; padding: 0; margin: 0 0 15px 0; }
-    .meal-content li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #d4e9d5; font-size: 18px; }
-    .meal-content li span:first-child { font-weight: bold; color: #333; }
-    .meal-content li span:last-child { color: #F8694D; font-weight: bold; }
-    .meal-content li .food-qty { color: #555; font-size: 16px; margin-left: 10px; }
-    .meal-content li i { cursor: pointer; color: #888; margin-left: 10px; }
-    .meal-content li i:hover { color: #F8694D; }
-    .meal-footer { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #333; }
-    .total-kcal-card { background-color: #F8694D; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-    .total-kcal-card.weekly { background-color: #9EC662; }
-    .total-kcal-card h3 { font-family: 'mousse', Arial, sans-serif; color: #FFF9EA; font-size: 26px; margin: 0; }
-    .total-kcal-card p { font-size: 38px; font-weight: bold; color: #FFF9EA; margin: 0; }
-    .total-kcal-card span.meta-text { font-size: 20px; opacity: 0.8; }
-    .btn-manual { background-color: #9EC662; color: white; width: 100%; margin-bottom: 20px; border: none; font-weight: bold; padding: 12px; border-radius: 10px; }
-    .btn-manual:hover { background-color: #86a754; color: white; }
+    @font-face { 
+        font-family: "Louis George Cafe"; 
+        src: url(fontes/louis_george_cafe/Louis\ George\ Cafe\ Light.ttf) format("truetype"); 
+    }
+    @font-face { 
+        font-family: "mousse"; 
+        src: url("fontes/mousse/Mousse-Regular.otf") format("otf"); 
+    }
+    body { 
+        font-family: 'Louis George Cafe', Arial, sans-serif; 
+        font-weight: 500; 
+        font-size: 22px; 
+        background-color: #FFF9EA; 
+        margin: 0; 
+        min-height: 100vh; 
+    }
+    .container { 
+        display: grid; 
+        grid-template-columns: 250px 1fr 300px; 
+        gap: 20px; 
+        max-width: 1400px; 
+        margin: 0 auto; 
+        padding: 20px; 
+    }
+    .sidebar-left { 
+        position: sticky; 
+        top: 20px; 
+        height: 95vh; 
+    }
+    .sidebar-left .logo img { 
+        width: 150px; 
+        margin-bottom: 30px; 
+    }
+    .sidebar-left ul { 
+        list-style: none; 
+        padding: 0; 
+    }
+    .sidebar-left ul li a { 
+        display: flex; 
+        align-items: center; 
+        padding: 15px; 
+        text-decoration: none; 
+        color: #555; 
+        font-size: 18px; 
+        border-radius: 8px; 
+        margin-bottom: 10px; 
+        font-weight: bold; 
+    }
+    .sidebar-left ul li a i { 
+        margin-right: 15px; 
+        width: 20px; 
+    }
+    .sidebar-left ul li a:hover, .sidebar-left ul li a.active { 
+        background-color: #F8694D; 
+        color: white; 
+    }
+    .sidebar-right { 
+        position: sticky; 
+        top: 20px; 
+    }
+    .user-tools { 
+        background-color: #C8E6C9; 
+        padding: 15px; 
+        border-radius: 12px; 
+        width: 400px; 
+        margin-bottom: 20px; 
+    }
+    .search-bar { 
+        display: flex; 
+        align-items: center; 
+        background-color: white; 
+        padding: 8px; 
+        border-radius: 20px; 
+        margin-bottom: 20px; 
+    }
+    .search-bar input { 
+        border: none; 
+        outline: none; 
+        background: none; 
+        width: 100%; 
+        margin-left: 8px; 
+    }
+    .tool-icons { 
+        display: flex; 
+        justify-content: space-around; 
+    }
+    .tool-icons a { 
+        font-size: 22px; 
+        color: #333; 
+    }
+    .feed-content { 
+        padding: 10px; 
+    }
+    .feed-header { 
+        text-align: center; 
+        margin-bottom: 30px; 
+        font-weight: bold; 
+        color: #555; 
+        font-size: 40px;
+        text-transform: capitalize; 
+    }
+    .week-navigator { 
+        display: flex; 
+        justify-content: space-around; 
+        align-items: center; 
+        margin-bottom: 40px; 
+    }
+    .day { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        cursor: pointer; 
+    }
+    .day-circle { 
+        width: 45px; 
+        height: 45px; 
+        border-radius: 50%; 
+        border: 2px solid #ccc; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        margin-bottom: 8px; 
+        transition: all 0.2s; 
+        font-weight: bold; 
+    }
+    .day span { 
+        font-size: 18px; 
+        text-transform: uppercase; 
+        font-weight: bold; 
+        color: #888; 
+    }
+    .day.active .day-circle { 
+        border-color: #F8694D; 
+        background-color: #F8694D; 
+        color: white; 
+    }
+    .day.active span { 
+        color: #F8694D; 
+    }
+    .meal-item { 
+        background-color: #E8F5E9; 
+        border-radius: 15px; 
+        margin-bottom: 15px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+    }
+    .meal-header { 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 20px; 
+        cursor: pointer; 
+        transition: transform 0.2s; 
+    }
+    .meal-header:hover { 
+        transform: translateY(-3px); 
+    }
+    .meal-info { 
+        display: flex; 
+        align-items: center; 
+        gap: 15px; 
+    }
+    .meal-info i { 
+        font-size: 26px; 
+        color: #555; 
+    }
+    .meal-info .meal-name { 
+        font-size: 20px; 
+        font-weight: bold; 
+        color: #333; 
+    }
+    .meal-header > i.fa-plus { 
+        font-size: 22px; 
+        color: #555; 
+        cursor: pointer; 
+        z-index: 10; 
+    }
+    .meal-content { 
+        padding: 0 20px 20px 20px; 
+        display: none; 
+    }
+    .meal-content ul { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0 0 15px 0; 
+    }
+    .meal-content li { 
+        display: flex; 
+        justify-content: space-between; 
+        padding: 8px 0; 
+        border-bottom: 1px solid #d4e9d5; 
+        font-size: 18px; 
+    }
+    .meal-content li span:first-child { 
+        font-weight: bold; 
+        color: #333; 
+    }
+    .meal-content li span:last-child { 
+        color: #F8694D;
+        font-weight: bold; 
+    }
+    .meal-content li .food-qty { 
+        color: #555; 
+        font-size: 16px; 
+        margin-left: 10px; 
+    }
+    .meal-content li i { 
+        cursor: pointer; 
+        color: #888; 
+        margin-left: 10px; 
+    }
+    .meal-content li i:hover { 
+        color: #F8694D; 
+    }
+    .meal-footer { 
+        display: flex; 
+        justify-content: space-between; 
+        font-size: 18px; 
+        font-weight: bold; 
+        color: #333; 
+    }
+    .total-kcal-card { 
+        background-color: #F8694D; 
+        padding: 20px; 
+        border-radius: 12px; 
+        text-align: center; 
+        margin-bottom: 20px; 
+    }
+    .total-kcal-card.weekly { 
+        background-color: #9EC662; 
+    }
+    .total-kcal-card h3 { 
+        font-family: 'mousse', Arial, sans-serif; 
+        color: #FFF9EA; 
+        font-size: 26px; 
+        margin: 0; 
+    }
+    .total-kcal-card p { 
+        font-size: 38px; 
+        font-weight: bold; 
+        color: #FFF9EA; 
+        margin: 0; 
+    }
+    .total-kcal-card span.meta-text { 
+        font-size: 20px; 
+        opacity: 0.8; 
+    }
+    .btn-manual { 
+        background-color: #9EC662; 
+        color: white; 
+        width: 100%; 
+        margin-bottom: 20px; 
+        border: none; 
+        font-weight: bold; 
+        padding: 12px; 
+        border-radius: 10px; 
+    }
+    .btn-manual:hover { 
+        background-color: #86a754; 
+        color: white; 
+    }
     </style>
 </head>
 <body>
@@ -287,7 +498,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let modalAuto = new bootstrap.Modal(document.getElementById('addFoodModal'));
     let modalManual = new bootstrap.Modal(document.getElementById('addManualModal'));
 
-    // --- FUNÇÃO PARA FORMATAR DATA BONITA ---
     function formatarDataBonita(dataISO) {
         const partes = dataISO.split('-');
         const data = new Date(partes[0], partes[1] - 1, partes[2]);
@@ -473,7 +683,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Atualiza Data
         dataSelecionada = data;
         
-        // MUDANÇA: Atualiza Título com data bonita
+        // MUDANÇA: Atualiza Título com data formatada
         document.getElementById('feed-title').textContent = formatarDataBonita(dataSelecionada);
         
         fetchRefeicoes(dataSelecionada);
