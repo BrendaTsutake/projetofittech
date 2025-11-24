@@ -188,18 +188,59 @@ $conn->close();
     }
     .comment-item strong { 
         color: #F8694D;
-        margin-right: 5px; font-size: 14px; }
-    .delete-comment-btn { color: #dc3545; cursor: pointer; font-size: 12px; margin-left: 10px; opacity: 0.7; }
-    .delete-comment-btn:hover { opacity: 1; }
+        margin-right: 5px;
+        font-size: 14px; }
+    .delete-comment-btn { 
+        color: #dc3545; 
+        cursor: pointer; 
+        font-size: 12px; 
+        margin-left: 10px; 
+        opacity: 0.7; 
+    }
+    .delete-comment-btn:hover { 
+        opacity: 1; 
+    }
     
-    .comment-form { display: flex; gap: 10px; margin-top: 10px; }
-    .comment-input { flex-grow: 1; border: 1px solid #ddd; border-radius: 20px; padding: 8px 15px; outline: none; font-size: 14px; }
-    .btn-comment { background-color: #F8694D; color: white; border: none; border-radius: 20px; padding: 5px 20px; font-size: 14px; cursor: pointer; font-weight: bold; }
-    .btn-comment:hover { background-color: #e05a3f; }
+    .comment-form { 
+        display: flex; 
+        gap: 10px; 
+        margin-top: 10px; 
+    }
+    .comment-input { 
+        flex-grow: 1; 
+        border: 1px solid #ddd; 
+        border-radius: 20px; 
+        padding: 8px 15px; 
+        outline: none; 
+        font-size: 14px; 
+    }
+    .btn-comment {
+        background-color: #F8694D; 
+        color: white; 
+        border: none; 
+        border-radius: 20px; 
+        padding: 5px 20px; 
+        font-size: 14px; 
+        cursor: pointer; 
+        font-weight: bold; 
+}
+    .btn-comment:hover { 
+        background-color: #e05a3f; 
+    }
 
-    .sidebar-right { position: sticky; top: 20px; }
-    .user-tools { background-color: #C8E6C9; padding: 15px; border-radius: 12px; width: 400px; }
-    .search-bar { display: flex; align-items: center; background-color: white; padding: 8px; border-radius: 20px; margin-bottom: 20px; }
+    .sidebar-right { 
+        position: sticky; 
+        top: 20px; 
+    }
+    .user-tools { 
+        background-color: #C8E6C9; 
+        padding: 15px; 
+        border-radius: 12px; 
+        width: 400px; 
+    }
+    .search-bar { 
+        display: flex; 
+        align-items: center; background-color: white; padding: 8px; border-radius: 20px; margin-bottom: 20px; }
     .search-bar input { border: none; outline: none; background: none; width: 100%; margin-left: 8px; }
     .tool-icons { display: flex; justify-content: space-around; }
     .tool-icons a { font-size: 22px; color: #333; }
@@ -221,7 +262,7 @@ $conn->close();
 
         <main class="feed">
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                 <div class="carousel-indicators">
+                <div class="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
@@ -246,10 +287,10 @@ $conn->close();
                     <a href="<?php echo $profileLink; ?>" class="profile-link">
                         
                         <img src="<?php echo htmlspecialchars($post['profile_pic']); ?>" 
-                             alt="Foto" 
-                             class="user-avatar"
-                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png'">
-                             
+                            alt="Foto" 
+                            class="user-avatar"
+                            onerror="this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png'">
+                            
                         <span class="username"><?php echo htmlspecialchars($post['username']); ?></span>
                     </a>
                 </div>
@@ -268,10 +309,10 @@ $conn->close();
                     
                     <div class="comment-form">
                         <input type="text" 
-                               class="comment-input" 
-                               id="input-<?php echo $post['post_id']; ?>" 
-                               placeholder="Adicione um comentário..."
-                               onkeypress="checarEnter(event, <?php echo $post['post_id']; ?>)">
+                            class="comment-input" 
+                            id="input-<?php echo $post['post_id']; ?>" 
+                            placeholder="Adicione um comentário..."
+                            onkeypress="checarEnter(event, <?php echo $post['post_id']; ?>)">
                         
                         <button class="btn-comment" onclick="enviarComentario(<?php echo $post['post_id']; ?>)">Publicar</button>
                     </div>
@@ -296,18 +337,11 @@ $conn->close();
                 </div>
 
                 <div class="tool-icons">
-                    <a href="notificacao.php" title="Notificações"><i class="fa-solid fa-bell"></i></a>
                     <a href="calendario.php" title="Calendário"><i class="fa-solid fa-calendar-days"></i></a>
                     <a href="perfil.php" title="Perfil"><i class="fa-solid fa-user"></i></a>
                 </div>
             </div>
             
-            <?php if(basename($_SERVER['PHP_SELF']) == 'paginicial.php' || basename($_SERVER['PHP_SELF']) == 'refeicao.php'): ?>
-            <div class="total-kcal-card" style="margin-top: 20px;">
-                <h3>Kcal Total (Dia)</h3>
-                <p id="day-total-kcal">0 / <span class="meta-text"><?php echo isset($meta_diaria) ? $meta_diaria : '0'; ?></span></p>
-            </div>
-            <?php endif; ?>
         </aside>
 
 <style>
